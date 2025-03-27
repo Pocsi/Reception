@@ -37,6 +37,20 @@
       );
       z-index: 4;
     }
+    /* Nueva barra horizontal con gradiente morado */
+    .horizontal-line-purple {
+      position: fixed;
+      bottom: 5vh;
+      left: 0;
+      width: calc(100% - 80px);
+      height: 1px;
+      background: linear-gradient(to right, 
+        rgba(128, 0, 255, 1) 0%,
+        rgba(128, 0, 255, 0.25) 18%,
+        rgba(128, 0, 255, 0) 25%
+      );
+      z-index: 4;
+    }
     /* Franja vertical negra */
     .vertical-stripe {
       position: fixed;
@@ -128,7 +142,7 @@
       .vertical-stripe {
         width: 40px;
       }
-      .horizontal-line {
+      .horizontal-line, .horizontal-line-purple {
         width: calc(100% - 40px);
       }
     }
@@ -137,6 +151,7 @@
 <body>
   <div class="vertical-stripe"></div>
   <div class="horizontal-line"></div>
+  <div class="horizontal-line-purple"></div>
   <div class="container">
     <!-- Portafolio -->
     <div class="item">
