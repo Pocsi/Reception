@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Espacio - Portfolio Minimal</title>
+  <style>
+    /* Estilos base */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    /* Contenedor principal con dimensiones fijas */
+    .container {
+      width: 1280px;
+      height: 1366px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: auto;
+      gap: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    /* Cada elemento de la cuadrícula */
+    .item {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .item a {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* Opcional: estilos para texto superpuesto (si deseas agregar títulos o etiquetas) */
+    .item .caption {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(255,255,255,0.8);
+      padding: 5px 10px;
+      font-size: 14px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Portafolio -->
+    <div class="item">
+      <a href="https://bento.me/ricci" target="_blank">
+        <img src="portafolio.png" alt="Portafolio">
+      </a>
+    </div>
+    <!-- Digital Walk Gal -->
+    <div class="item">
+      <a href="https://oncyber.io/spaces/XoXl6QGJA623Skh2rMCJC" target="_blank">
+        <img src="Digital Walk Gal.png" alt="Digital Walk Gal">
+      </a>
+    </div>
+    <!-- Casa Nuestra (Digital Gal) -->
+    <div class="item">
+      <a href="https://oncyber.io/spaces/Dwi13vknf2a2yQGBwohi" target="_blank">
+        <img src="Casa nuestra (Digital Gal).png" alt="Casa Nuestra - Digital Gal">
+      </a>
+    </div>
+    <!-- Research Blog -->
+    <div class="item">
+      <a href="https://reportevy.substack.com/" target="_blank">
+        <img src="Research blog.png" alt="Research Blog">
+      </a>
+    </div>
+    <!-- Merch Stand -->
+    <div class="item">
+      <a href="https://radswag.printify.me/product/17581723" target="_blank">
+        <img src="Merch Stand.png" alt="Merch Stand">
+      </a>
+    </div>
+    <!-- Coleccionables -->
+    <div class="item">
+      <a href="https://opensea.io/atrptra" target="_blank">
+        <img src="Colleccionables.png" alt="Coleccionables">
+      </a>
+    </div>
+    <!-- Twitter -->
+    <div class="item">
+      <a href="https://twitter.com/ricci" target="_blank">
+        <img src="x.png" alt="Twitter">
+      </a>
+    </div>
+  </div>
+</body>
+</html>
