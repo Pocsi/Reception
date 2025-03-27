@@ -22,6 +22,16 @@
       padding: 2vw;
       box-sizing: border-box;
     }
+    /* Franja vertical negra */
+    .vertical-stripe {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 100vh;
+      background-color: #000000;
+      z-index: 5;
+    }
     /* Cada elemento con posición absoluta */
     .item {
       position: absolute;
@@ -100,10 +110,14 @@
       .item {
         width: 30vw !important;
       }
+      .vertical-stripe {
+        width: 40px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="vertical-stripe"></div>
   <div class="container">
     <!-- Portafolio -->
     <div class="item">
