@@ -35,11 +35,34 @@
     .item a {
       display: block;
       text-decoration: none;
+      position: relative;
     }
     .item img {
       display: block;
       max-width: 100%;
       height: auto;
+    }
+
+    /* Estilo para los títulos */
+    .item .title {
+      position: absolute;
+      bottom: -2.5em;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 0.5em 1em;
+      border-radius: 4px;
+      font-size: 1vw;
+      white-space: nowrap;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .item:hover .title {
+      opacity: 1;
+      bottom: -2em;
     }
 
     /* Posiciones y tamaños específicos para cada elemento */
@@ -91,6 +114,9 @@
       .item {
         width: 30vw !important;
       }
+      .item .title {
+        font-size: 1.5vw;
+      }
     }
   </style>
 </head>
@@ -100,42 +126,49 @@
     <div class="item">
       <a href="https://bento.me/ricci" target="_blank">
         <img src="portafolio.png" alt="Portafolio">
+        <span class="title">Portafolio</span>
       </a>
     </div>
     <!-- Digital Walk Gal -->
     <div class="item">
       <a href="https://oncyber.io/spaces/XoXl6QGJA623Skh2rMCJC" target="_blank">
         <img src="Digital Walk Gal.png" alt="Digital Walk Gal">
+        <span class="title">Digital Walk Gallery</span>
       </a>
     </div>
     <!-- Casa Nuestra (Digital Gal) -->
     <div class="item">
       <a href="https://oncyber.io/spaces/Dwi13vknf2a2yQGBwohi" target="_blank">
         <img src="Casa nuestra (Digital Gal).png" alt="Casa Nuestra - Digital Gal">
+        <span class="title">Casa Nuestra Gallery</span>
       </a>
     </div>
     <!-- Research Blog -->
     <div class="item">
       <a href="https://reportevy.substack.com/" target="_blank">
         <img src="Research blog.png" alt="Research Blog">
+        <span class="title">Research Blog</span>
       </a>
     </div>
     <!-- Merch Stand -->
     <div class="item">
       <a href="https://radswag.printify.me/product/17581723" target="_blank">
         <img src="Merch Stand.png" alt="Merch Stand">
+        <span class="title">Merch Stand</span>
       </a>
     </div>
     <!-- Coleccionables -->
     <div class="item">
       <a href="https://opensea.io/atrptra" target="_blank">
         <img src="Colleccionables.png" alt="Coleccionables">
+        <span class="title">Coleccionables</span>
       </a>
     </div>
     <!-- Twitter -->
     <div class="item">
       <a href="https://twitter.com/ricci" target="_blank">
         <img src="x.png" alt="Twitter">
+        <span class="title">Twitter</span>
       </a>
     </div>
   </div>
