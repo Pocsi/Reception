@@ -270,21 +270,53 @@
 
     // Configuración de APIs
     const ALPHA_VANTAGE_API_KEY = 'ACUS4L73I8PT14I8';
-    // Ya no necesitamos ESG_API_KEY porque usaremos Yahoo Finance
+    const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+    // Función para guardar datos en el caché
+    function saveToCache(key, data) {
+      const cacheData = {
+        timestamp: Date.now(),
+        data: data
+      };
+      localStorage.setItem(key, JSON.stringify(cacheData));
+    }
+
+    // Función para obtener datos del caché
+    function getFromCache(key) {
+      const cachedData = localStorage.getItem(key);
+      if (!cachedData) return null;
+
+      const { timestamp, data } = JSON.parse(cachedData);
+      if (Date.now() - timestamp > CACHE_DURATION) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      return data;
+    }
 
     // Función para obtener datos de precios
     async function fetchPriceData(symbol) {
+      // Intentar obtener del caché primero
+      const cacheKey = `price_${symbol}`;
+      const cachedData = getFromCache(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+
       try {
         const response = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=ACUS4L73I8PT14I8`);
         const data = await response.json();
         
         if (data['Global Quote']) {
           const quote = data['Global Quote'];
-          return {
+          const priceData = {
             price: parseFloat(quote['05. price']),
             changePercent: parseFloat(quote['10. change percent'].replace('%', '')),
             change: parseFloat(quote['09. change'])
           };
+          // Guardar en caché
+          saveToCache(cacheKey, priceData);
+          return priceData;
         }
         throw new Error('Invalid price data format');
       } catch (error) {
@@ -295,18 +327,28 @@
 
     // Función para obtener datos de sostenibilidad
     async function fetchSustainabilityData(symbol) {
+      // Intentar obtener del caché primero
+      const cacheKey = `esg_${symbol}`;
+      const cachedData = getFromCache(cacheKey);
+      if (cachedData) {
+        return cachedData;
+      }
+
       try {
         const response = await fetch(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${symbol}?modules=esgScores`);
         const data = await response.json();
         
         if (data.quoteSummary && data.quoteSummary.result && data.quoteSummary.result[0]) {
           const esgData = data.quoteSummary.result[0].esgScores;
-          return {
+          const sustainabilityData = {
             totalEsg: esgData.totalEsg || 0,
             environmentScore: esgData.environmentScore || 0,
             socialScore: esgData.socialScore || 0,
             governanceScore: esgData.governanceScore || 0
           };
+          // Guardar en caché
+          saveToCache(cacheKey, sustainabilityData);
+          return sustainabilityData;
         }
         throw new Error('Invalid ESG data format');
       } catch (error) {
@@ -431,11 +473,11 @@
       console.log('Initializing carousel...');
       initializeCarousel();
       
-      // Actualizar datos cada 5 minutos (Alpha Vantage tiene límites de API)
+      // Actualizar datos cada 24 horas
       setInterval(() => {
         console.log('Updating carousel data...');
         initializeCarousel();
-      }, 5 * 60 * 1000);
+      }, CACHE_DURATION);
     });
 
     // Código existente para el zoom de la imagen
