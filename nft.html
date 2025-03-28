@@ -61,45 +61,20 @@
       width: 100%;
       height: 40px;
       background-color: #f8f9fa;
-      border-top: 1px solid #e9ecef;
+      border-top: 1px solid #dee2e6;
       overflow: hidden;
       z-index: 1000;
     }
 
     .crypto-track {
-      display: flex;
-      animation: scroll 30s linear infinite;
+      display: inline-flex;
+      padding: 0 20px;
+      animation: scroll 60s linear infinite;
       white-space: nowrap;
-      padding: 0 20px;
     }
 
-    .crypto-item {
-      padding: 0 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-    }
-
-    .crypto-item.positive {
-      color: #28a745;
-    }
-
-    .crypto-item.negative {
-      color: #dc3545;
-    }
-
-    .update-time {
-      position: fixed;
-      bottom: 45px;
-      right: 5px;
-      font-size: 10px;
-      color: #6c757d;
-      z-index: 1001;
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 2px 5px;
-      border-radius: 3px;
+    .crypto-track:hover {
+      animation-play-state: paused;
     }
 
     @keyframes scroll {
@@ -107,8 +82,58 @@
         transform: translateX(0);
       }
       100% {
-        transform: translateX(calc(-50% - 20px));
+        transform: translateX(-50%);
       }
+    }
+
+    .crypto-item {
+      display: inline-block;
+      padding: 0 20px;
+      font-size: 12px;
+      color: #333;
+    }
+
+    .crypto-item a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .crypto-symbol {
+      font-weight: bold;
+      font-size: 11px;
+    }
+
+    .crypto-price {
+      font-size: 11px;
+    }
+
+    .crypto-change {
+      font-size: 11px;
+    }
+
+    .crypto-change.positive {
+      color: #28a745;
+    }
+
+    .crypto-change.negative {
+      color: #dc3545;
+    }
+
+    .crypto-esg {
+      font-size: 9px;
+      color: #6c757d;
+    }
+
+    .crypto-impact {
+      font-size: 9px;
+      color: #6c757d;
+    }
+
+    .update-time {
+      display: none;
     }
   </style>
 </head>
@@ -324,7 +349,11 @@
                 }
             }
 
-            // Actualizar timestamp
+            // Duplicar los elementos para crear un efecto de scroll infinito
+            const items = track.innerHTML;
+            track.innerHTML = items + items;
+
+            // Actualizar timestamp (pero no mostrarlo)
             const updateTime = document.querySelector('.update-time');
             updateTime.textContent = `Última actualización: ${new Date().toLocaleString()}`;
         } catch (error) {
