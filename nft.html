@@ -48,8 +48,8 @@
     }
 
     .nft-image {
-      max-width: 5%;
-      max-height: 5vh;
+      max-width: 80%;
+      max-height: 80vh;
       object-fit: contain;
       transition: transform 0.1s ease-out;
     }
@@ -247,7 +247,18 @@
     ];
 
     // Lista de los 35 activos más sostenibles
-    let sustainableAssets = [];
+    let sustainableAssets = [
+      { symbol: 'AAPL', name: 'Apple Inc.' },
+      { symbol: 'MSFT', name: 'Microsoft Corporation' },
+      { symbol: 'GOOGL', name: 'Alphabet Inc.' },
+      { symbol: 'TSLA', name: 'Tesla Inc.' },
+      { symbol: 'NKE', name: 'Nike Inc.' },
+      { symbol: 'ADBE', name: 'Adobe Inc.' },
+      { symbol: 'INTC', name: 'Intel Corporation' },
+      { symbol: 'ORCL', name: 'Oracle Corporation' },
+      { symbol: 'CRM', name: 'Salesforce Inc.' },
+      { symbol: 'NVDA', name: 'NVIDIA Corporation' }
+    ];
 
     // Configuración de APIs
     const ALPHA_VANTAGE_API_KEY = 'ACUS4L73I8PT14I8';
@@ -306,74 +317,111 @@
                 esgData.governanceScore * 0.2);
     }
 
-    // Función para actualizar el carrusel
-    async function updateCarousel() {
-        const track = document.querySelector('.crypto-track');
-        if (!track) {
-            console.error('Crypto track no encontrado');
-            return;
-        }
-
-        track.innerHTML = ''; // Limpiar el carrusel actual
-
-        try {
-            // Cargar la lista base de activos sostenibles
-            const response = await fetch('sustainable_assets.json');
-            if (!response.ok) {
-                throw new Error('No se pudo cargar la lista de activos');
-            }
-            const assets = await response.json();
-
-            // Obtener datos actualizados para cada activo
-            for (const asset of assets) {
-                const [priceData, esgData] = await Promise.all([
-                    fetchPriceData(asset.symbol),
-                    fetchSustainabilityData(asset.symbol)
-                ]);
-
-                if (priceData && esgData) {
-                    const sustainabilityScore = calculateSustainabilityScore(esgData);
-                    
-                    // Crear elemento del carrusel
-                    const item = document.createElement('div');
-                    item.className = 'crypto-item';
-                    
-                    const changeClass = priceData.change >= 0 ? 'positive' : 'negative';
-                    const changeSymbol = priceData.change >= 0 ? '+' : '';
-                    
-                    item.innerHTML = `
-                        <a href="${asset.website}" target="_blank">
-                            <span class="crypto-symbol">${asset.symbol}</span>
-                            <span class="crypto-price">$${priceData.price.toFixed(2)}</span>
-                            <span class="crypto-change ${changeClass}">
-                                ${changeSymbol}${priceData.changePercent.toFixed(2)}%
-                            </span>
-                            <span class="crypto-esg">ESG: ${sustainabilityScore.toFixed(0)}</span>
-                            <span class="crypto-impact">${asset.impact}</span>
-                        </a>
-                    `;
-                    
-                    track.appendChild(item);
-                }
-            }
-
-            // Duplicar los elementos para crear un efecto de scroll infinito
-            const items = track.innerHTML;
-            track.innerHTML = items + items;
-
-        } catch (error) {
-            console.error('Error updating carousel:', error);
-            // Mostrar mensaje de error en el carrusel
-            track.innerHTML = '<div class="crypto-item">Error al cargar los datos. Por favor, intente más tarde.</div>';
-        }
+    // Función para formatear el precio
+    function formatPrice(price) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(price);
     }
 
-    // Actualizar cada 10 minutos
-    setInterval(updateCarousel, 10 * 60 * 1000);
+    // Función para formatear el cambio porcentual
+    function formatChange(change) {
+      const sign = change >= 0 ? '+' : '';
+      return `${sign}${change.toFixed(2)}%`;
+    }
 
-    // Actualización inicial
+    // Función para crear un elemento del carrusel
+    async function createCarouselItem(asset) {
+      const div = document.createElement('div');
+      div.className = 'crypto-item';
+      
+      try {
+        // Intentar obtener datos de ambas APIs en paralelo
+        const [priceData, esgData] = await Promise.allSettled([
+          fetchPriceData(asset.symbol),
+          fetchSustainabilityData(asset.symbol)
+        ]);
+
+        // Preparar el contenido HTML basado en los datos disponibles
+        let htmlContent = `<a href="#" onclick="return false;"><span class="crypto-symbol">${asset.symbol}</span>`;
+        
+        // Agregar precio si está disponible
+        if (priceData.status === 'fulfilled' && priceData.value) {
+          htmlContent += `
+            <span class="crypto-price">${formatPrice(priceData.value.price)}</span>
+            <span class="crypto-change ${priceData.value.changePercent >= 0 ? 'positive' : 'negative'}">${formatChange(priceData.value.changePercent)}</span>
+          `;
+        } else {
+          htmlContent += `<span class="crypto-price">Price N/A</span>`;
+        }
+
+        // Agregar datos ESG si están disponibles
+        if (esgData.status === 'fulfilled' && esgData.value) {
+          const sustainabilityScore = calculateSustainabilityScore(esgData.value);
+          htmlContent += `<span class="crypto-esg">ESG: ${sustainabilityScore.toFixed(0)}</span>`;
+        } else {
+          htmlContent += `<span class="crypto-esg">ESG: N/A</span>`;
+        }
+
+        htmlContent += '</a>';
+        div.innerHTML = htmlContent;
+
+      } catch (error) {
+        console.error(`Error creating carousel item for ${asset.symbol}:`, error);
+        div.innerHTML = `
+          <a href="#" onclick="return false;">
+            <span class="crypto-symbol">${asset.symbol}</span>
+            <span class="crypto-price">Error</span>
+          </a>
+        `;
+      }
+      
+      return div;
+    }
+
+    // Función para inicializar el carrusel
+    async function initializeCarousel() {
+      const track = document.querySelector('.crypto-track');
+      track.innerHTML = ''; // Limpiar el track
+
+      try {
+        // Crear elementos con datos reales
+        const items = await Promise.all(sustainableAssets.map(createCarouselItem));
+        
+        // Verificar si al menos algunos elementos tienen datos
+        const hasData = items.some(item => 
+          item.querySelector('.crypto-price').textContent !== 'Price N/A' || 
+          item.querySelector('.crypto-esg').textContent !== 'ESG: N/A'
+        );
+
+        if (hasData) {
+          items.forEach(item => track.appendChild(item));
+          items.forEach(item => track.appendChild(item.cloneNode(true)));
+
+          // Actualizar timestamp solo si hay datos
+          const updateTime = document.getElementById('updateTime');
+          updateTime.style.display = 'block';
+          updateTime.textContent = `Last update: ${new Date().toLocaleTimeString()}`;
+        } else {
+          track.innerHTML = '<div class="crypto-item">No data available at the moment. Please try again later.</div>';
+        }
+      } catch (error) {
+        console.error('Error initializing carousel:', error);
+        track.innerHTML = '<div class="crypto-item">Error loading data. Please try again later.</div>';
+      }
+    }
+
+    // Inicializar el carrusel cuando se carga la página
     document.addEventListener('DOMContentLoaded', () => {
-        updateCarousel();
+      initializeCarousel();
+      
+      // Actualizar datos cada 5 minutos (Alpha Vantage tiene límites de API)
+      setInterval(() => {
+        initializeCarousel();
+      }, 5 * 60 * 1000);
     });
 
     // Código existente para el zoom de la imagen
