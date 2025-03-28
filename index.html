@@ -177,7 +177,7 @@
     /* Estilos para el carrusel de activos */
     .assets-carousel {
       position: fixed;
-      bottom: 0;
+      bottom: 50px;
       left: 0;
       width: 100%;
       height: 50px;
@@ -187,21 +187,48 @@
       z-index: 1000;
     }
 
+    /* Estilos para el carrusel de criptoactivos */
+    .crypto-carousel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.95));
+      border-top: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
     .assets-track {
       display: inline-flex;
       padding: 0 20px;
-      animation: scroll 30s linear infinite;
+      animation: scrollLeft 30s linear infinite;
       white-space: nowrap;
       min-width: 100%;
     }
 
-    .assets-track:hover {
+    .crypto-track {
+      display: inline-flex;
+      padding: 0 20px;
+      animation: scrollRight 30s linear infinite;
+      white-space: nowrap;
+      min-width: 100%;
+    }
+
+    .assets-track:hover,
+    .crypto-track:hover {
       animation-play-state: paused;
     }
 
-    @keyframes scroll {
+    @keyframes scrollLeft {
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
+    }
+
+    @keyframes scrollRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
     }
 
     .asset-item {
@@ -263,6 +290,14 @@
     .metric.negative {
       background: rgba(220, 53, 69, 0.2);
     }
+
+    .chain-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+    }
   </style>
 </head>
 <body>
@@ -317,6 +352,12 @@
 
   <div class="assets-carousel">
     <div class="assets-track">
+      <!-- Los elementos se cargarán dinámicamente aquí -->
+    </div>
+  </div>
+
+  <div class="crypto-carousel">
+    <div class="crypto-track">
       <!-- Los elementos se cargarán dinámicamente aquí -->
     </div>
   </div>
@@ -397,11 +438,11 @@
           <span class="asset-symbol">${asset.symbol}</span>
           <div class="asset-metrics">`;
 
-        // Calcular el crecimiento total (semanal + diario)
+        // Calcular el crecimiento total
         const totalGrowth = (asset.weeklyChange || 0) + (priceData?.changePercent || 0);
         const growthClass = totalGrowth >= 0 ? 'positive' : 'negative';
 
-        // Mostrar el crecimiento total como métrica principal
+        // Mostrar el crecimiento total
         htmlContent += `
           <div class="metric ${growthClass}">
             <span class="metric-label">Growth</span>
@@ -414,6 +455,14 @@
             <div class="metric">
               <span class="metric-label">Price</span>
               <span class="metric-value">$${priceData.price.toFixed(2)}</span>
+            </div>`;
+        }
+
+        // Mostrar la cadena si es un criptoactivo
+        if (asset.chain) {
+          htmlContent += `
+            <div class="chain-badge">
+              ${asset.chain}
             </div>`;
         }
 
@@ -435,6 +484,83 @@
       }
       
       return div;
+    }
+
+    // Función para obtener y combinar todos los activos
+    async function getAllAssets() {
+      try {
+        // Obtener datos de ambos tipos de activos
+        const [traditionalResponse, cryptoResponse] = await Promise.all([
+          fetch('performance_data.json'),
+          fetch('crypto_data.json')
+        ]);
+
+        const traditionalData = await traditionalResponse.json();
+        const cryptoData = await cryptoResponse.json();
+
+        // Combinar todos los activos
+        const allAssets = [
+          ...Object.values(traditionalData.assets),
+          ...Object.values(cryptoData.assets)
+        ];
+
+        // Ordenar por crecimiento total
+        return allAssets.sort((a, b) => {
+          const aGrowth = (a.weeklyChange || 0) + (a.dailyChange || 0);
+          const bGrowth = (b.weeklyChange || 0) + (b.dailyChange || 0);
+          return bGrowth - aGrowth;
+        });
+      } catch (error) {
+        console.error('Error fetching assets:', error);
+        return [];
+      }
+    }
+
+    // Función para inicializar el carrusel de activos tradicionales
+    async function initializeTraditionalCarousel() {
+      const carousel = document.querySelector('.assets-carousel');
+      const track = document.createElement('div');
+      track.className = 'assets-track';
+      carousel.appendChild(track);
+
+      try {
+        // Obtener datos de activos tradicionales
+        const response = await fetch('performance_data.json');
+        const data = await response.json();
+        
+        // Ordenar por crecimiento
+        const sortedAssets = Object.values(data.assets)
+          .sort((a, b) => {
+            const aGrowth = (a.weeklyChange || 0) + (a.dailyChange || 0);
+            const bGrowth = (b.weeklyChange || 0) + (b.dailyChange || 0);
+            return bGrowth - aGrowth;
+          });
+
+        // Crear elementos del carrusel
+        for (const asset of sortedAssets) {
+          const item = await createAssetItem(asset);
+          track.appendChild(item);
+        }
+
+        // Duplicar elementos para scroll infinito
+        const items = track.innerHTML;
+        track.innerHTML = items + items;
+
+      } catch (error) {
+        console.error('Error initializing traditional carousel:', error);
+        track.innerHTML = `
+          <div class="asset-item">
+            <a href="#" onclick="return false;">
+              <span class="asset-symbol">Error</span>
+              <div class="asset-metrics">
+                <div class="metric">
+                  <span class="metric-label">Failed to load data</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        `;
+      }
     }
 
     // Función para formatear el volumen
@@ -483,29 +609,83 @@
       { symbol: 'CRM', name: 'Salesforce Inc.' }
     ];
 
-    // Función para inicializar el carrusel
-    async function initializeCarousel() {
-      const carousel = document.querySelector('.assets-carousel');
+    // Función para crear un elemento del carrusel de criptoactivos
+    async function createCryptoItem(asset) {
+      const div = document.createElement('div');
+      div.className = 'crypto-item';
+      
+      try {
+        let htmlContent = `<a href="#" onclick="return false;">
+          <span class="crypto-symbol">${asset.symbol}</span>
+          <div class="crypto-metrics">`;
+
+        // Calcular el crecimiento total
+        const totalGrowth = (asset.weeklyChange || 0) + (asset.dailyChange || 0);
+        const growthClass = totalGrowth >= 0 ? 'positive' : 'negative';
+
+        // Mostrar el crecimiento total
+        htmlContent += `
+          <div class="crypto-metric ${growthClass}">
+            <span class="crypto-metric-label">Growth</span>
+            <span class="crypto-metric-value">${formatChange(totalGrowth)}</span>
+          </div>`;
+
+        // Mostrar el precio actual
+        htmlContent += `
+          <div class="crypto-metric">
+            <span class="crypto-metric-label">Price</span>
+            <span class="crypto-metric-value">$${asset.lastPrice.toFixed(2)}</span>
+          </div>`;
+
+        // Mostrar la cadena
+        htmlContent += `
+          <div class="chain-badge">
+            ${asset.chain}
+          </div>`;
+
+        htmlContent += '</div></a>';
+        div.innerHTML = htmlContent;
+
+      } catch (error) {
+        console.error(`Error creating crypto item for ${asset.symbol}:`, error);
+        div.innerHTML = `
+          <a href="#" onclick="return false;">
+            <span class="crypto-symbol">${asset.symbol}</span>
+            <div class="crypto-metrics">
+              <div class="crypto-metric">
+                <span class="crypto-metric-label">Error</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }
+      
+      return div;
+    }
+
+    // Función para inicializar el carrusel de criptoactivos
+    async function initializeCryptoCarousel() {
+      const carousel = document.querySelector('.crypto-carousel');
       const track = document.createElement('div');
-      track.className = 'assets-track';
+      track.className = 'crypto-track';
       carousel.appendChild(track);
 
       try {
-        // Obtener datos de rendimiento
-        const response = await fetch('performance_data.json');
+        // Obtener datos de criptoactivos
+        const response = await fetch('crypto_data.json');
         const data = await response.json();
         
-        // Convertir activos a array y ordenar por crecimiento
+        // Ordenar por crecimiento
         const sortedAssets = Object.values(data.assets)
           .sort((a, b) => {
             const aGrowth = (a.weeklyChange || 0) + (a.dailyChange || 0);
             const bGrowth = (b.weeklyChange || 0) + (b.dailyChange || 0);
-            return bGrowth - aGrowth; // Ordenar de mayor a menor crecimiento
+            return bGrowth - aGrowth;
           });
 
         // Crear elementos del carrusel
         for (const asset of sortedAssets) {
-          const item = await createAssetItem(asset);
+          const item = await createCryptoItem(asset);
           track.appendChild(item);
         }
 
@@ -514,7 +694,7 @@
         track.innerHTML = items + items;
 
       } catch (error) {
-        console.error('Error initializing carousel:', error);
+        console.error('Error initializing crypto carousel:', error);
         track.innerHTML = `
           <div class="asset-item">
             <a href="#" onclick="return false;">
@@ -530,11 +710,13 @@
       }
     }
 
-    // Inicializar el carrusel cuando el DOM esté listo
+    // Inicializar ambos carruseles cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', () => {
-      initializeCarousel();
+      initializeTraditionalCarousel();
+      initializeCryptoCarousel();
       // Actualizar cada 5 minutos
-      setInterval(initializeCarousel, 5 * 60 * 1000);
+      setInterval(initializeTraditionalCarousel, 5 * 60 * 1000);
+      setInterval(initializeCryptoCarousel, 5 * 60 * 1000);
     });
   </script>
 </body>
