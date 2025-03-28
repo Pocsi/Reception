@@ -1,0 +1,105 @@
+{
+  "lastUpdate": "2024-03-20T00:00:00Z",
+  "assets": {
+    "BTC": {
+      "symbol": "BTC",
+      "name": "Bitcoin",
+      "chain": "Bitcoin",
+      "weeklyChange": 5.2,
+      "dailyChange": 2.1,
+      "lastPrice": 67250.45,
+      "volume": 28500000000,
+      "marketCap": 1300000000000
+    },
+    "ETH": {
+      "symbol": "ETH",
+      "name": "Ethereum",
+      "chain": "Ethereum",
+      "weeklyChange": 3.8,
+      "dailyChange": 1.5,
+      "lastPrice": 3450.32,
+      "volume": 18500000000,
+      "marketCap": 420000000000
+    },
+    "SOL": {
+      "symbol": "SOL",
+      "name": "Solana",
+      "chain": "Solana",
+      "weeklyChange": 8.4,
+      "dailyChange": 3.2,
+      "lastPrice": 125.61,
+      "volume": 7500000000,
+      "marketCap": 55000000000
+    },
+    "AVAX": {
+      "symbol": "AVAX",
+      "name": "Avalanche",
+      "chain": "Avalanche",
+      "weeklyChange": 4.2,
+      "dailyChange": 1.5,
+      "lastPrice": 45.09,
+      "volume": 6500000000,
+      "marketCap": 17000000000
+    },
+    "MATIC": {
+      "symbol": "MATIC",
+      "name": "Polygon",
+      "chain": "Polygon",
+      "weeklyChange": 2.8,
+      "dailyChange": 0.9,
+      "lastPrice": 1.75,
+      "volume": 1100000000,
+      "marketCap": 18000000000
+    },
+    "DOT": {
+      "symbol": "DOT",
+      "name": "Polkadot",
+      "chain": "Polkadot",
+      "weeklyChange": 6.7,
+      "dailyChange": 2.4,
+      "lastPrice": 9.53,
+      "volume": 800000000,
+      "marketCap": 12000000000
+    },
+    "ADA": {
+      "symbol": "ADA",
+      "name": "Cardano",
+      "chain": "Cardano",
+      "weeklyChange": -1.8,
+      "dailyChange": -0.7,
+      "lastPrice": 0.64,
+      "volume": 700000000,
+      "marketCap": 22000000000
+    },
+    "LINK": {
+      "symbol": "LINK",
+      "name": "Chainlink",
+      "chain": "Ethereum",
+      "weeklyChange": 3.1,
+      "dailyChange": 1.1,
+      "lastPrice": 18.45,
+      "volume": 600000000,
+      "marketCap": 11000000000
+    },
+    "UNI": {
+      "symbol": "UNI",
+      "name": "Uniswap",
+      "chain": "Ethereum",
+      "weeklyChange": 4.5,
+      "dailyChange": 1.8,
+      "lastPrice": 12.32,
+      "volume": 550000000,
+      "marketCap": 7500000000
+    },
+    "AAVE": {
+      "symbol": "AAVE",
+      "name": "Aave",
+      "chain": "Ethereum",
+      "weeklyChange": 5.6,
+      "dailyChange": 2.2,
+      "lastPrice": 98.75,
+      "volume": 450000000,
+      "marketCap": 1500000000
+    }
+  }
+} 

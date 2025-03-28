@@ -1,0 +1,85 @@
+{
+  "lastUpdate": "2024-03-28",
+  "stocks": {
+    "AAPL": {
+      "totalEsg": 85,
+      "environmentScore": 82,
+      "socialScore": 88,
+      "governanceScore": 85,
+      "impact": "High",
+      "website": "https://www.apple.com/environment/"
+    },
+    "MSFT": {
+      "totalEsg": 88,
+      "environmentScore": 85,
+      "socialScore": 90,
+      "governanceScore": 89,
+      "impact": "High",
+      "website": "https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RW13Q0K"
+    },
+    "GOOGL": {
+      "totalEsg": 86,
+      "environmentScore": 84,
+      "socialScore": 87,
+      "governanceScore": 87,
+      "impact": "High",
+      "website": "https://www.gstatic.com/gumdrop/sustainability/google-2022-environmental-report.pdf"
+    },
+    "TSLA": {
+      "totalEsg": 92,
+      "environmentScore": 95,
+      "socialScore": 88,
+      "governanceScore": 93,
+      "impact": "Very High",
+      "website": "https://www.tesla.com/ns_videos/2022-tesla-impact-report.pdf"
+    },
+    "NKE": {
+      "totalEsg": 82,
+      "environmentScore": 80,
+      "socialScore": 85,
+      "governanceScore": 81,
+      "impact": "Medium",
+      "website": "https://purpose.nike.com/impact-report"
+    },
+    "ADBE": {
+      "totalEsg": 84,
+      "environmentScore": 82,
+      "socialScore": 86,
+      "governanceScore": 84,
+      "impact": "High",
+      "website": "https://www.adobe.com/content/dam/cc/en/corporate-responsibility/pdfs/Adobe_2022_ESG_Report.pdf"
+    },
+    "INTC": {
+      "totalEsg": 80,
+      "environmentScore": 78,
+      "socialScore": 82,
+      "governanceScore": 80,
+      "impact": "Medium",
+      "website": "https://www.intel.com/content/www/us/en/corporate-responsibility/corporate-responsibility-report.html"
+    },
+    "ORCL": {
+      "totalEsg": 81,
+      "environmentScore": 79,
+      "socialScore": 83,
+      "governanceScore": 81,
+      "impact": "Medium",
+      "website": "https://www.oracle.com/corporate/citizenship/"
+    },
+    "CRM": {
+      "totalEsg": 89,
+      "environmentScore": 87,
+      "socialScore": 91,
+      "governanceScore": 89,
+      "impact": "High",
+      "website": "https://www.salesforce.com/content/dam/web/en_us/www/documents/other/salesforce-stakeholder-impact-report-2022.pdf"
+    },
+    "NVDA": {
+      "totalEsg": 83,
+      "environmentScore": 81,
+      "socialScore": 85,
+      "governanceScore": 83,
+      "impact": "High",
+      "website": "https://nvidianews.nvidia.com/news/nvidia-publishes-2022-corporate-responsibility-report"
+    }
+  }
+} 

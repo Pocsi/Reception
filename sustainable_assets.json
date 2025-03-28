@@ -1,62 +1,142 @@
 [
   {
-    "symbol": "BEN",
-    "name": "Ben & Jerry's",
-    "impact": "B Corp, Fair Trade",
-    "website": "https://www.benjerry.com"
-  },
-  {
-    "symbol": "PCTY",
-    "name": "Patagonia",
-    "impact": "B Corp, 1% for the Planet",
-    "website": "https://www.patagonia.com"
-  },
-  {
-    "symbol": "NEE",
-    "name": "NextEra Energy",
-    "impact": "Líder en energía renovable",
-    "website": "https://www.nexteraenergy.com"
-  },
-  {
-    "symbol": "CSCO",
-    "name": "Cisco",
-    "impact": "Net Zero 2040",
-    "website": "https://www.cisco.com"
-  },
-  {
-    "symbol": "MSFT",
-    "name": "Microsoft",
-    "impact": "Carbon Negative 2030",
-    "website": "https://www.microsoft.com"
-  },
-  {
-    "symbol": "AAPL",
-    "name": "Apple",
-    "impact": "100% Energía Renovable",
-    "website": "https://www.apple.com"
-  },
-  {
-    "symbol": "GOOGL",
-    "name": "Alphabet",
-    "impact": "Carbon Free 2030",
-    "website": "https://www.google.com"
-  },
-  {
-    "symbol": "TSLA",
-    "name": "Tesla",
-    "impact": "Vehiculos Eléctricos",
-    "website": "https://www.tesla.com"
-  },
-  {
-    "symbol": "NKE",
-    "name": "Nike",
-    "impact": "Circular Design",
-    "website": "https://www.nike.com"
+    "symbol": "CRM",
+    "name": "Salesforce",
+    "impact": "Net Zero 2040, 100% Energía Renovable",
+    "website": "https://www.salesforce.com",
+    "sustainabilityScore": 98
   },
   {
     "symbol": "ADBE",
     "name": "Adobe",
-    "impact": "Net Zero 2035",
-    "website": "https://www.adobe.com"
+    "impact": "Net Zero 2035, 100% Energía Renovable",
+    "website": "https://www.adobe.com",
+    "sustainabilityScore": 95
+  },
+  {
+    "symbol": "AAPL",
+    "name": "Apple",
+    "impact": "Carbon Neutral, 100% Energía Renovable",
+    "website": "https://www.apple.com",
+    "sustainabilityScore": 92
+  },
+  {
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "impact": "Carbon Negative 2030, 100% Energía Renovable",
+    "website": "https://www.microsoft.com",
+    "sustainabilityScore": 90
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet",
+    "impact": "Carbon Free 2030, 100% Energía Renovable",
+    "website": "https://www.google.com",
+    "sustainabilityScore": 88
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "impact": "Vehiculos Eléctricos, Energía Renovable",
+    "website": "https://www.tesla.com",
+    "sustainabilityScore": 85
+  },
+  {
+    "symbol": "NKE",
+    "name": "Nike",
+    "impact": "Circular Design, Energía Renovable",
+    "website": "https://www.nike.com",
+    "sustainabilityScore": 82
+  },
+  {
+    "symbol": "INTC",
+    "name": "Intel",
+    "impact": "Net Zero 2040, Energía Renovable",
+    "website": "https://www.intel.com",
+    "sustainabilityScore": 80
+  },
+  {
+    "symbol": "ORCL",
+    "name": "Oracle",
+    "impact": "Net Zero 2050, Energía Renovable",
+    "website": "https://www.oracle.com",
+    "sustainabilityScore": 78
+  },
+  {
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "impact": "AI Sostenible, Energía Renovable",
+    "website": "https://www.nvidia.com",
+    "sustainabilityScore": 75
+  },
+  {
+    "symbol": "AMAT",
+    "name": "Applied Materials",
+    "impact": "Semiconductor Sostenible",
+    "website": "https://www.appliedmaterials.com",
+    "sustainabilityScore": 72
+  },
+  {
+    "symbol": "ASML",
+    "name": "ASML",
+    "impact": "Tecnología Limpia",
+    "website": "https://www.asml.com",
+    "sustainabilityScore": 70
+  },
+  {
+    "symbol": "TXN",
+    "name": "Texas Instruments",
+    "impact": "Eficiencia Energética",
+    "website": "https://www.ti.com",
+    "sustainabilityScore": 68
+  },
+  {
+    "symbol": "ADI",
+    "name": "Analog Devices",
+    "impact": "Innovación Sostenible",
+    "website": "https://www.analog.com",
+    "sustainabilityScore": 65
+  },
+  {
+    "symbol": "KLAC",
+    "name": "KLA",
+    "impact": "Tecnología Verde",
+    "website": "https://www.kla.com",
+    "sustainabilityScore": 63
+  },
+  {
+    "symbol": "LRCX",
+    "name": "Lam Research",
+    "impact": "Manufactura Sostenible",
+    "website": "https://www.lamresearch.com",
+    "sustainabilityScore": 60
+  },
+  {
+    "symbol": "AMZN",
+    "name": "Amazon",
+    "impact": "Climate Pledge",
+    "website": "https://www.amazon.com",
+    "sustainabilityScore": 58
+  },
+  {
+    "symbol": "META",
+    "name": "Meta",
+    "impact": "Net Zero 2030",
+    "website": "https://www.meta.com",
+    "sustainabilityScore": 55
+  },
+  {
+    "symbol": "NET",
+    "name": "Cloudflare",
+    "impact": "Green Computing",
+    "website": "https://www.cloudflare.com",
+    "sustainabilityScore": 53
+  },
+  {
+    "symbol": "SNOW",
+    "name": "Snowflake",
+    "impact": "Data Sostenible",
+    "website": "https://www.snowflake.com",
+    "sustainabilityScore": 50
   }
 ] 
