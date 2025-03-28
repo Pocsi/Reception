@@ -453,6 +453,69 @@
       return `${sign}${change.toFixed(2)}%`;
     }
 
+    // Función para inicializar el carrusel
+    async function initializeCarousel() {
+      const carousel = document.querySelector('.crypto-carousel');
+      const track = document.createElement('div');
+      track.className = 'crypto-track';
+      carousel.appendChild(track);
+
+      // Mostrar mensaje de carga
+      const loadingMessage = document.createElement('div');
+      loadingMessage.className = 'crypto-item';
+      loadingMessage.innerHTML = `
+        <a href="#" onclick="return false;">
+          <span class="crypto-symbol">Loading...</span>
+          <div class="crypto-metrics">
+            <div class="metric">
+              <span class="metric-label">Initializing</span>
+            </div>
+          </div>
+        </a>
+      `;
+      track.appendChild(loadingMessage);
+
+      try {
+        // Cargar datos de rendimiento
+        const performanceResponse = await fetch('performance_data.json');
+        const performanceData = await performanceResponse.json();
+        
+        // Ordenar activos por rendimiento
+        const sortedAssets = Object.entries(performanceData.assets)
+          .map(([symbol, data]) => ({ symbol, ...data }))
+          .sort((a, b) => b.weeklyChange - a.weeklyChange)
+          .slice(0, 10); // Tomar los 10 mejores
+
+        // Limpiar mensaje de carga
+        track.innerHTML = '';
+
+        // Crear elementos del carrusel
+        for (const asset of sortedAssets) {
+          const item = await createCarouselItem(asset);
+          track.appendChild(item);
+        }
+
+        // Duplicar elementos para scroll infinito
+        const items = track.innerHTML;
+        track.innerHTML = items + items;
+
+      } catch (error) {
+        console.error('Error initializing carousel:', error);
+        track.innerHTML = `
+          <div class="crypto-item">
+            <a href="#" onclick="return false;">
+              <span class="crypto-symbol">Error</span>
+              <div class="crypto-metrics">
+                <div class="metric">
+                  <span class="metric-label">Failed to load data</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        `;
+      }
+    }
+
     // Función para crear un elemento del carrusel
     async function createCarouselItem(asset) {
       const div = document.createElement('div');
@@ -478,6 +541,14 @@
               <span class="metric-label">Performance</span>
               <span class="metric-value">${formatChange(priceData.value.changePercent)}</span>
             </div>`;
+        } else {
+          // Usar datos de rendimiento del JSON si no hay datos en tiempo real
+          const changeClass = asset.weeklyChange >= 0 ? 'positive' : 'negative';
+          htmlContent += `
+            <div class="metric ${changeClass}">
+              <span class="metric-label">Weekly</span>
+              <span class="metric-value">${formatChange(asset.weeklyChange)}</span>
+            </div>`;
         }
 
         // Agregar métrica ESG
@@ -488,6 +559,15 @@
             <div class="metric">
               <span class="metric-label">ESG</span>
               <span class="metric-value">${sustainabilityData.totalEsg}</span>
+              <span class="esg-dot ${esgClass}"></span>
+            </div>`;
+        } else {
+          // Usar datos ESG del JSON si no hay datos en tiempo real
+          const esgClass = getESGClass(asset.esgScore);
+          htmlContent += `
+            <div class="metric">
+              <span class="metric-label">ESG</span>
+              <span class="metric-value">${asset.esgScore}</span>
               <span class="esg-dot ${esgClass}"></span>
             </div>`;
         }
@@ -502,7 +582,7 @@
             <span class="crypto-symbol">${asset.symbol}</span>
             <div class="crypto-metrics">
               <div class="metric">
-                <span class="metric-label">Loading...</span>
+                <span class="metric-label">Error</span>
               </div>
             </div>
           </a>
@@ -569,59 +649,6 @@
       }
     }
 
-    // Función para inicializar el carrusel
-    async function initializeCarousel() {
-      const track = document.querySelector('.crypto-track');
-      const loadingIndicator = document.getElementById('loadingIndicator');
-      
-      if (!track) {
-        console.error('Crypto track element not found');
-        return;
-      }
-
-      track.innerHTML = ''; // Limpiar el track
-      loadingIndicator.classList.add('active');
-
-      try {
-        // Obtener los activos con mejor rendimiento
-        const topAssets = await getTopPerformingAssets(10);
-        
-        // Crear elementos con datos reales
-        const items = await Promise.all(topAssets.map(async (asset) => {
-          const item = await createCarouselItem(asset);
-          // Agregar el elemento inmediatamente cuando esté listo
-          track.appendChild(item);
-          return item;
-        }));
-        
-        // Verificar si al menos algunos elementos tienen datos
-        const hasData = items.some(item => 
-          item.querySelector('.crypto-price').textContent !== 'Price N/A' || 
-          item.querySelector('.crypto-esg').textContent !== 'ESG: N/A'
-        );
-
-        if (hasData) {
-          // Duplicar los elementos para el efecto de scroll infinito
-          items.forEach(item => track.appendChild(item.cloneNode(true)));
-
-          // Actualizar timestamp solo si hay datos
-          const updateTime = document.getElementById('updateTime');
-          if (updateTime) {
-            updateTime.style.display = 'block';
-            updateTime.textContent = `Last update: ${new Date().toLocaleTimeString()}`;
-          }
-        } else {
-          track.innerHTML = '<div class="crypto-item">Loading market data... Please wait.</div>';
-          console.log('No data available yet, showing loading message');
-        }
-      } catch (error) {
-        console.error('Error initializing carousel:', error);
-        track.innerHTML = '<div class="crypto-item">Loading market data... Please wait.</div>';
-      } finally {
-        loadingIndicator.classList.remove('active');
-      }
-    }
-
     // Función para actualizar los datos de rendimiento
     async function updatePerformanceData() {
       try {
@@ -641,22 +668,11 @@
       }
     }
 
-    // Inicializar el carrusel cuando se carga la página
+    // Inicializar el carrusel cuando el DOM esté listo
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('Initializing carousel...');
       initializeCarousel();
-      
-      // Verificar y actualizar datos ESG cada semana
-      setInterval(checkAndUpdateESGData, ESG_UPDATE_INTERVAL);
-      
-      // Verificar y actualizar datos de rendimiento cada semana
-      setInterval(updatePerformanceData, ESG_UPDATE_INTERVAL);
-      
-      // Actualizar precios cada 24 horas
-      setInterval(() => {
-        console.log('Updating price data...');
-        initializeCarousel();
-      }, CACHE_DURATION);
+      // Actualizar cada 5 minutos
+      setInterval(initializeCarousel, 5 * 60 * 1000);
     });
 
     // Código existente para el zoom de la imagen
