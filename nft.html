@@ -68,7 +68,7 @@
 
     .loading-indicator {
       position: fixed;
-      bottom: 40px;
+      bottom: 100px;
       left: 50%;
       transform: translateX(-50%);
       background-color: rgba(0, 0, 0, 0.7);
@@ -590,9 +590,14 @@
       const carousel = document.querySelector('.assets-carousel');
       const track = document.createElement('div');
       track.className = 'assets-track';
+      carousel.innerHTML = ''; // Limpiar el contenido existente
       carousel.appendChild(track);
 
       try {
+        // Mostrar indicador de carga
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        loadingIndicator.classList.add('active');
+
         // Obtener datos de activos tradicionales
         const response = await fetch('performance_data.json');
         const data = await response.json();
@@ -637,6 +642,10 @@
             </a>
           </div>
         `;
+      } finally {
+        // Ocultar indicador de carga
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        loadingIndicator.classList.remove('active');
       }
     }
 
@@ -645,9 +654,14 @@
       const carousel = document.querySelector('.crypto-carousel');
       const track = document.createElement('div');
       track.className = 'crypto-track';
+      carousel.innerHTML = ''; // Limpiar el contenido existente
       carousel.appendChild(track);
 
       try {
+        // Mostrar indicador de carga
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        loadingIndicator.classList.add('active');
+
         // Obtener datos de criptoactivos
         const response = await fetch('crypto_data.json');
         const data = await response.json();
@@ -692,6 +706,10 @@
             </a>
           </div>
         `;
+      } finally {
+        // Ocultar indicador de carga
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        loadingIndicator.classList.remove('active');
       }
     }
 
