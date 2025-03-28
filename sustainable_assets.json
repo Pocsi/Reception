@@ -1,0 +1,62 @@
+[
+  {
+    "symbol": "BEN",
+    "name": "Ben & Jerry's",
+    "impact": "B Corp, Fair Trade",
+    "website": "https://www.benjerry.com"
+  },
+  {
+    "symbol": "PCTY",
+    "name": "Patagonia",
+    "impact": "B Corp, 1% for the Planet",
+    "website": "https://www.patagonia.com"
+  },
+  {
+    "symbol": "NEE",
+    "name": "NextEra Energy",
+    "impact": "Líder en energía renovable",
+    "website": "https://www.nexteraenergy.com"
+  },
+  {
+    "symbol": "CSCO",
+    "name": "Cisco",
+    "impact": "Net Zero 2040",
+    "website": "https://www.cisco.com"
+  },
+  {
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "impact": "Carbon Negative 2030",
+    "website": "https://www.microsoft.com"
+  },
+  {
+    "symbol": "AAPL",
+    "name": "Apple",
+    "impact": "100% Energía Renovable",
+    "website": "https://www.apple.com"
+  },
+  {
+    "symbol": "GOOGL",
+    "name": "Alphabet",
+    "impact": "Carbon Free 2030",
+    "website": "https://www.google.com"
+  },
+  {
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "impact": "Vehiculos Eléctricos",
+    "website": "https://www.tesla.com"
+  },
+  {
+    "symbol": "NKE",
+    "name": "Nike",
+    "impact": "Circular Design",
+    "website": "https://www.nike.com"
+  },
+  {
+    "symbol": "ADBE",
+    "name": "Adobe",
+    "impact": "Net Zero 2035",
+    "website": "https://www.adobe.com"
+  }
+] 
