@@ -410,7 +410,7 @@
 
     // Configuración de APIs
     const ALPHA_VANTAGE_API_KEY = 'ACUS4L73I8PT14I8';
-    const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
     const ESG_UPDATE_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
     // Función para guardar datos en el caché
@@ -537,15 +537,15 @@
           <span class="asset-symbol">${asset.symbol}</span>
           <div class="asset-metrics">`;
 
-        // Calcular el crecimiento total
-        const totalGrowth = (asset.weeklyChange || 0) + (priceData?.changePercent || 0);
-        const growthClass = totalGrowth >= 0 ? 'positive' : 'negative';
+        // Mostrar solo el crecimiento diario
+        const dailyGrowth = priceData?.changePercent || 0;
+        const growthClass = dailyGrowth >= 0 ? 'positive' : 'negative';
 
-        // Mostrar el crecimiento total
+        // Mostrar el crecimiento diario
         htmlContent += `
           <div class="metric ${growthClass}">
-            <span class="metric-label">Growth</span>
-            <span class="metric-value">${formatChange(totalGrowth)}</span>
+            <span class="metric-label">Daily</span>
+            <span class="metric-value">${formatChange(dailyGrowth)}</span>
           </div>`;
 
         // Mostrar el precio actual
@@ -597,13 +597,21 @@
         const response = await fetch('performance_data.json');
         const data = await response.json();
         
-        // Ordenar por crecimiento
-        const sortedAssets = Object.values(data.assets)
-          .sort((a, b) => {
-            const aGrowth = (a.weeklyChange || 0) + (a.dailyChange || 0);
-            const bGrowth = (b.weeklyChange || 0) + (b.dailyChange || 0);
-            return bGrowth - aGrowth;
-          });
+        // Obtener datos de precios para todos los activos
+        const assetsWithPrices = await Promise.all(
+          Object.values(data.assets).map(async (asset) => {
+            const priceData = await fetchPriceData(asset.symbol);
+            return {
+              ...asset,
+              dailyChange: priceData?.changePercent || 0
+            };
+          })
+        );
+
+        // Ordenar por crecimiento diario
+        const sortedAssets = assetsWithPrices
+          .sort((a, b) => b.dailyChange - a.dailyChange)
+          .slice(0, 10); // Tomar solo los 10 mejores
 
         // Crear elementos del carrusel
         for (const asset of sortedAssets) {
@@ -644,13 +652,21 @@
         const response = await fetch('crypto_data.json');
         const data = await response.json();
         
-        // Ordenar por crecimiento
-        const sortedAssets = Object.values(data.assets)
-          .sort((a, b) => {
-            const aGrowth = (a.weeklyChange || 0) + (a.dailyChange || 0);
-            const bGrowth = (b.weeklyChange || 0) + (b.dailyChange || 0);
-            return bGrowth - aGrowth;
-          });
+        // Obtener datos de precios para todos los activos
+        const assetsWithPrices = await Promise.all(
+          Object.values(data.assets).map(async (asset) => {
+            const priceData = await fetchPriceData(asset.symbol);
+            return {
+              ...asset,
+              dailyChange: priceData?.changePercent || 0
+            };
+          })
+        );
+
+        // Ordenar por crecimiento diario
+        const sortedAssets = assetsWithPrices
+          .sort((a, b) => b.dailyChange - a.dailyChange)
+          .slice(0, 10); // Tomar solo los 10 mejores
 
         // Crear elementos del carrusel
         for (const asset of sortedAssets) {
@@ -683,9 +699,9 @@
     document.addEventListener('DOMContentLoaded', () => {
       initializeTraditionalCarousel();
       initializeCryptoCarousel();
-      // Actualizar cada 5 minutos
-      setInterval(initializeTraditionalCarousel, 5 * 60 * 1000);
-      setInterval(initializeCryptoCarousel, 5 * 60 * 1000);
+      // Actualizar cada 24 horas
+      setInterval(initializeTraditionalCarousel, 24 * 60 * 60 * 1000);
+      setInterval(initializeCryptoCarousel, 24 * 60 * 60 * 1000);
     });
 
     // Código existente para el zoom de la imagen
