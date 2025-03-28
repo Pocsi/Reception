@@ -143,8 +143,8 @@
   </div>
 
   <div class="crypto-carousel">
-    <div class="crypto-track" id="cryptoTrack">
-      <!-- Los elementos se agregarán dinámicamente -->
+    <div class="crypto-track">
+      <!-- Los elementos se cargarán dinámicamente aquí -->
     </div>
   </div>
   <div class="update-time" id="updateTime"></div>
@@ -265,9 +265,7 @@
                     environmentalScore: esgData.environmentScore || 0,
                     socialScore: esgData.socialScore || 0,
                     governanceScore: esgData.governanceScore || 0,
-                    totalEsg: esgData.totalEsg || 0,
-                    peerGroup: esgData.peerGroup || 'N/A',
-                    peerEsgScorePerformance: esgData.peerEsgScorePerformance || 'N/A'
+                    totalEsg: esgData.totalEsg || 0
                 };
             }
             return null;
@@ -282,11 +280,15 @@
         try {
             const response = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`);
             const data = await response.json();
-            return {
-                price: parseFloat(data['Global Quote']['05. price']),
-                change: parseFloat(data['Global Quote']['09. change']),
-                changePercent: parseFloat(data['Global Quote']['10. change percent'])
-            };
+            
+            if (data['Global Quote']) {
+                return {
+                    price: parseFloat(data['Global Quote']['05. price']),
+                    change: parseFloat(data['Global Quote']['09. change']),
+                    changePercent: parseFloat(data['Global Quote']['10. change percent'])
+                };
+            }
+            return null;
         } catch (error) {
             console.error(`Error fetching price data for ${symbol}:`, error);
             return null;
@@ -296,11 +298,9 @@
     // Función para calcular el puntaje de sostenibilidad
     function calculateSustainabilityScore(esgData) {
         if (!esgData) return 0;
-        // Usamos el totalEsg de Yahoo Finance si está disponible
         if (esgData.totalEsg) {
             return esgData.totalEsg;
         }
-        // Si no, calculamos basado en los componentes
         return (esgData.environmentalScore * 0.5 + 
                 esgData.socialScore * 0.3 + 
                 esgData.governanceScore * 0.2);
@@ -309,11 +309,19 @@
     // Función para actualizar el carrusel
     async function updateCarousel() {
         const track = document.querySelector('.crypto-track');
+        if (!track) {
+            console.error('Crypto track no encontrado');
+            return;
+        }
+
         track.innerHTML = ''; // Limpiar el carrusel actual
 
         try {
             // Cargar la lista base de activos sostenibles
             const response = await fetch('sustainable_assets.json');
+            if (!response.ok) {
+                throw new Error('No se pudo cargar la lista de activos');
+            }
             const assets = await response.json();
 
             // Obtener datos actualizados para cada activo
@@ -353,11 +361,10 @@
             const items = track.innerHTML;
             track.innerHTML = items + items;
 
-            // Actualizar timestamp (pero no mostrarlo)
-            const updateTime = document.querySelector('.update-time');
-            updateTime.textContent = `Última actualización: ${new Date().toLocaleString()}`;
         } catch (error) {
             console.error('Error updating carousel:', error);
+            // Mostrar mensaje de error en el carrusel
+            track.innerHTML = '<div class="crypto-item">Error al cargar los datos. Por favor, intente más tarde.</div>';
         }
     }
 
@@ -365,7 +372,9 @@
     setInterval(updateCarousel, 10 * 60 * 1000);
 
     // Actualización inicial
-    updateCarousel();
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCarousel();
+    });
 
     // Código existente para el zoom de la imagen
     const image = document.getElementById('nftImage');
