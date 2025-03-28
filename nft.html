@@ -28,25 +28,395 @@
     body {
       margin: 0;
       padding: 0;
-      background: #fafafa;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #1a1a1a;
-      line-height: 1.5;
+      background-color: #ffffff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
     }
 
-    .carousel-container {
-      padding: 40px 0;
+    .nft-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       overflow: hidden;
-      background: linear-gradient(to bottom, #fafafa 0%, #f5f5f5 100%);
+    }
+
+    .nft-image {
+      max-width: 80%;
+      max-height: 80vh;
+      object-fit: contain;
+      transition: transform 0.1s ease-out;
+    }
+
+    .crypto-carousel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.95));
+      border-top: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .loading-indicator {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      z-index: 1001;
+      display: none;
+    }
+
+    .loading-indicator.active {
+      display: block;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .crypto-track {
+      display: inline-flex;
+      padding: 0 30px;
+      animation: scrollRight 180s linear infinite;
+      white-space: nowrap;
+      min-width: 100%;
+      gap: 40px;
+    }
+
+    .crypto-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scrollRight {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(0); }
+    }
+
+    .crypto-item {
+      display: inline-flex;
+      padding: 0 20px;
+      font-size: 14px;
+      color: #fff;
+      min-width: 350px;
+      max-width: 350px;
+      height: 50px;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+    }
+
+    .crypto-item a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .crypto-symbol {
+      font-weight: bold;
+      font-size: 16px;
+      min-width: 80px;
+      color: #fff;
+    }
+
+    .crypto-metrics {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      min-width: 90px;
+      max-width: 90px;
+      justify-content: space-between;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      white-space: nowrap;
+    }
+
+    .metric-value {
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .metric.positive {
+      background: rgba(40, 167, 69, 0.2);
+    }
+
+    .metric.negative {
+      background: rgba(220, 53, 69, 0.2);
+    }
+
+    .esg-score {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .esg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .esg-dot.high { background: #28a745; }
+    .esg-dot.medium { background: #ffc107; }
+    .esg-dot.low { background: #dc3545; }
+
+    .update-time {
+      display: none;
+    }
+
+    /* Estilos para el carrusel de activos tradicionales */
+    .assets-carousel {
+      position: fixed;
+      bottom: 50px;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.9));
+      border-top: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .assets-track {
+      display: inline-flex;
+      padding: 0 30px;
+      animation: scrollLeft 180s linear infinite;
+      white-space: nowrap;
+      min-width: 100%;
+      gap: 40px;
+    }
+
+    @keyframes scrollLeft {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Estilos para el carrusel de criptoactivos */
+    .crypto-carousel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.95));
+      border-top: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .crypto-track {
+      display: inline-flex;
+      padding: 0 30px;
+      animation: scrollRight 180s linear infinite;
+      white-space: nowrap;
+      min-width: 100%;
+      gap: 40px;
+    }
+
+    @keyframes scrollRight {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Estilos comunes para los elementos */
+    .asset-item, .crypto-item {
+      display: inline-flex;
+      padding: 0 20px;
+      font-size: 14px;
+      color: #fff;
+      min-width: 350px;
+      max-width: 350px;
+      height: 50px;
+      align-items: center;
+      justify-content: flex-start;
+      flex-shrink: 0;
+    }
+
+    .asset-item a, .crypto-item a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .asset-symbol, .crypto-symbol {
+      font-weight: bold;
+      font-size: 16px;
+      min-width: 80px;
+      color: #fff;
+    }
+
+    .asset-metrics, .crypto-metrics {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+      min-width: 90px;
+      max-width: 90px;
+      justify-content: space-between;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      white-space: nowrap;
+    }
+
+    .metric-value {
+      font-weight: bold;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .metric.positive {
+      background: rgba(40, 167, 69, 0.2);
+    }
+
+    .metric.negative {
+      background: rgba(220, 53, 69, 0.2);
+    }
+
+    .chain-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9);
+      white-space: nowrap;
+    }
+
+    .assets-carousel {
+      display: flex;
+      overflow: hidden;
+      white-space: nowrap;
+      animation: scrollLeft 60s linear infinite;
+      gap: 20px;
+      padding: 20px 0;
+    }
+
+    .crypto-carousel {
+      display: flex;
+      overflow: hidden;
+      white-space: nowrap;
+      animation: scrollRight 60s linear infinite;
+      gap: 20px;
+      padding: 20px 0;
+    }
+
+    .asset-item, .crypto-item {
+      min-width: 350px;
+      max-width: 350px;
+      padding: 15px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      margin-right: 20px;
+    }
+
+    @keyframes scrollLeft {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-100%);
+      }
+    }
+
+    @keyframes scrollRight {
+      from {
+        transform: translateX(-100%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    .asset-name, .crypto-name {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .asset-price, .crypto-price {
+      font-size: 1.1em;
+      margin: 5px 0;
+    }
+
+    .asset-change, .crypto-change {
+      font-size: 1em;
+      margin: 5px 0;
+    }
+
+    .positive-change {
+      color: #4CAF50;
+    }
+
+    .negative-change {
+      color: #f44336;
     }
 
     .assets-carousel, .crypto-carousel {
       display: flex;
       overflow: hidden;
       white-space: nowrap;
-      gap: 24px;
-      padding: 20px;
-      margin: 20px 0;
+      gap: 25px;
+      padding: 30px 0;
+      position: relative;
     }
 
     .assets-carousel {
@@ -55,82 +425,74 @@
 
     .crypto-carousel {
       animation: scrollRight 60s linear infinite;
+      margin-top: 20px;
     }
 
     .asset-item, .crypto-item {
-      min-width: 300px;
-      max-width: 300px;
-      padding: 24px;
-      border-radius: 16px;
-      background: #ffffff;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      min-width: 350px;
+      max-width: 350px;
+      padding: 20px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
-      border: 1px solid rgba(0, 0, 0, 0.04);
+      margin-right: 25px;
     }
 
     .asset-item:hover, .crypto-item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .asset-name, .crypto-name {
-      font-size: 1.1em;
+      font-size: 1.3em;
       font-weight: 600;
       margin-bottom: 12px;
-      color: #1a1a1a;
-      white-space: normal;
-      line-height: 1.4;
+      color: #333;
+      letter-spacing: -0.5px;
     }
 
     .asset-info {
       font-size: 0.9em;
       color: #666;
-      margin-bottom: 12px;
-      opacity: 0.8;
+      margin-bottom: 10px;
+      font-weight: 500;
     }
 
     .asset-price, .crypto-price {
       font-size: 1.2em;
-      font-weight: 500;
       margin: 8px 0;
-      color: #1a1a1a;
+      font-weight: 600;
+      color: #2c3e50;
     }
 
     .asset-change, .crypto-change {
-      font-size: 0.95em;
+      font-size: 1em;
       margin: 8px 0;
       font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 6px;
+      display: inline-block;
     }
 
     .crypto-volume {
       font-size: 0.9em;
       color: #666;
       margin-top: 8px;
-      opacity: 0.8;
+      font-weight: 500;
     }
 
     .positive-change {
-      color: #00a693;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
     }
 
     .negative-change {
-      color: #ff4757;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .positive-change::before {
-      content: "↑";
-      font-size: 0.9em;
-    }
-
-    .negative-change::before {
-      content: "↓";
-      font-size: 0.9em;
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
     }
 
     @keyframes scrollLeft {
@@ -138,28 +500,71 @@
         transform: translateX(0);
       }
       to {
-        transform: translateX(calc(-300px * 5 - 24px * 5));
+        transform: translateX(-100%);
       }
     }
 
     @keyframes scrollRight {
       from {
-        transform: translateX(calc(-300px * 5 - 24px * 5));
+        transform: translateX(-100%);
       }
       to {
         transform: translateX(0);
       }
     }
 
+    /* Ajustes para el contenedor principal */
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    .carousel-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(10px);
+    }
+
+    .carousel-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+      text-align: center;
+      letter-spacing: -0.5px;
+    }
+
+    .carousel-subtitle {
+      font-size: 1.1em;
+      color: #666;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    /* Responsive adjustments */
     @media (max-width: 768px) {
       .asset-item, .crypto-item {
-        min-width: 260px;
-        max-width: 260px;
-        padding: 20px;
+        min-width: 280px;
+        max-width: 280px;
+        padding: 15px;
       }
       
-      .carousel-container {
-        padding: 20px 0;
+      .carousel-title {
+        font-size: 1.5em;
+      }
+      
+      .carousel-subtitle {
+        font-size: 1em;
       }
     }
   </style>
@@ -175,6 +580,9 @@
   </div>
 
   <div class="carousel-container">
+    <h2 class="carousel-title">Market Performance</h2>
+    <p class="carousel-subtitle">Real-time tracking of top performing assets</p>
+    
     <div class="crypto-carousel"></div>
     <div class="assets-carousel"></div>
   </div>
@@ -318,8 +726,8 @@
       const { timestamp, data } = JSON.parse(cachedData);
       if (Date.now() - timestamp > CACHE_DURATION) {
         localStorage.removeItem(key);
-        return null;
-      }
+            return null;
+        }
       return data;
     }
 
@@ -391,7 +799,7 @@
           const data = await response.json();
           if (data.assets[symbol]) {
             const asset = data.assets[symbol];
-            return {
+                return {
               price: asset.lastPrice,
               changePercent: asset.dailyChange,
               change: (asset.lastPrice * asset.dailyChange) / 100,
@@ -402,7 +810,7 @@
           console.error(`Error fetching local data for ${symbol}:`, localError);
         }
         
-        return null;
+            return null;
       }
     }
 
@@ -436,15 +844,15 @@
           return sustainabilityData;
         }
         throw new Error('Stock not found in ESG data');
-      } catch (error) {
+        } catch (error) {
         console.error(`Error fetching ESG data for ${symbol}:`, error);
-        return null;
-      }
+            return null;
+        }
     }
 
     // Función para calcular el puntaje de sostenibilidad
     function calculateSustainabilityScore(esgData) {
-      if (!esgData) return 0;
+        if (!esgData) return 0;
       return esgData.totalEsg || 0;
     }
 
@@ -519,8 +927,8 @@
                 <span class="metric-label">Error</span>
               </div>
             </div>
-          </a>
-        `;
+                        </a>
+                    `;
       }
       
       return div;
@@ -563,14 +971,14 @@
         // Crear elementos del carrusel
         for (const asset of sortedAssets) {
           const item = await createAssetItem(asset);
-          track.appendChild(item);
-        }
+                    track.appendChild(item);
+            }
 
         // Duplicar elementos para scroll infinito
-        const items = track.innerHTML;
-        track.innerHTML = items + items;
+            const items = track.innerHTML;
+            track.innerHTML = items + items;
 
-      } catch (error) {
+        } catch (error) {
         console.error('Error initializing traditional carousel:', error);
         track.innerHTML = `
           <div class="asset-item">
@@ -773,11 +1181,10 @@
         }).format(crypto.lastPrice);
 
         item.innerHTML = `
-          <div class="crypto-name">${crypto.name}</div>
-          <div class="asset-info">${crypto.symbol}</div>
+          <div class="crypto-name">${crypto.name} (${crypto.symbol})</div>
           <div class="crypto-price">${formattedPrice}</div>
           <div class="crypto-change ${dailyChangeClass}">
-            ${Math.abs(crypto.dailyChange).toFixed(2)}%
+            24h: ${crypto.dailyChange.toFixed(2)}%
           </div>
           <div class="crypto-volume">Vol: ${formatVolume(crypto.volume)}</div>
         `;
@@ -799,11 +1206,11 @@
         }).format(asset.lastPrice);
 
         item.innerHTML = `
-          <div class="asset-name">${asset.name}</div>
+          <div class="asset-name">${asset.name} (${asset.symbol})</div>
           <div class="asset-info">${asset.industry}</div>
           <div class="asset-price">${formattedPrice}</div>
           <div class="asset-change ${dailyChangeClass}">
-            ${Math.abs(asset.dailyChange).toFixed(2)}%
+            24h: ${asset.dailyChange.toFixed(2)}%
           </div>
         `;
         
