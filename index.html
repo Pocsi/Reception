@@ -173,6 +173,96 @@
       transform: scale(1.1);
       opacity: 1;
     }
+
+    /* Estilos para el carrusel de activos */
+    .assets-carousel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.9));
+      border-top: 1px solid rgba(255,255,255,0.1);
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    .assets-track {
+      display: inline-flex;
+      padding: 0 20px;
+      animation: scroll 30s linear infinite;
+      white-space: nowrap;
+      min-width: 100%;
+    }
+
+    .assets-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .asset-item {
+      display: inline-flex;
+      padding: 0 30px;
+      font-size: 14px;
+      color: #fff;
+      min-width: 250px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .asset-item a {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      height: 50px;
+      width: 100%;
+    }
+
+    .asset-symbol {
+      font-weight: bold;
+      font-size: 16px;
+      min-width: 60px;
+      color: #fff;
+    }
+
+    .asset-metrics {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .metric-value {
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .metric.positive {
+      background: rgba(40, 167, 69, 0.2);
+    }
+
+    .metric.negative {
+      background: rgba(220, 53, 69, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -224,5 +314,228 @@
       </a>
     </div>
   </div>
+
+  <div class="assets-carousel">
+    <div class="assets-track">
+      <!-- Los elementos se cargarán dinámicamente aquí -->
+    </div>
+  </div>
+
+  <script>
+    // Configuración de caché
+    const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas en milisegundos
+
+    // Función para guardar datos en el caché
+    function saveToCache(key, data) {
+      const cacheData = {
+        timestamp: Date.now(),
+        data: data
+      };
+      localStorage.setItem(key, JSON.stringify(cacheData));
+    }
+
+    // Función para obtener datos del caché
+    function getFromCache(key) {
+      const cachedData = localStorage.getItem(key);
+      if (!cachedData) return null;
+
+      const { timestamp, data } = JSON.parse(cachedData);
+      if (Date.now() - timestamp > CACHE_DURATION) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      return data;
+    }
+
+    // Función para obtener datos de precios
+    async function fetchPriceData(symbol) {
+      const cacheKey = `price_${symbol}`;
+      const cachedData = getFromCache(cacheKey);
+      if (cachedData) return cachedData;
+
+      try {
+        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`)}`);
+        const data = await response.json();
+        
+        if (data.chart && data.chart.result && data.chart.result[0]) {
+          const quote = data.chart.result[0];
+          const price = quote.meta.regularMarketPrice;
+          const previousClose = quote.meta.previousClose;
+          const changePercent = ((price - previousClose) / previousClose) * 100;
+          
+          const priceData = {
+            price: price,
+            changePercent: changePercent,
+            change: price - previousClose
+          };
+          
+          saveToCache(cacheKey, priceData);
+          return priceData;
+        }
+        throw new Error('Invalid price data format');
+      } catch (error) {
+        console.error(`Error fetching price data for ${symbol}:`, error);
+        return null;
+      }
+    }
+
+    // Función para formatear el cambio porcentual
+    function formatChange(change) {
+      const sign = change >= 0 ? '+' : '';
+      return `${sign}${change.toFixed(2)}%`;
+    }
+
+    // Función para crear un elemento del carrusel
+    async function createAssetItem(asset) {
+      const div = document.createElement('div');
+      div.className = 'asset-item';
+      
+      try {
+        const priceData = await fetchPriceData(asset.symbol);
+        
+        let htmlContent = `<a href="#" onclick="return false;">
+          <span class="asset-symbol">${asset.symbol}</span>
+          <div class="asset-metrics">`;
+
+        // Calcular el crecimiento total (semanal + diario)
+        const totalGrowth = (asset.weeklyChange || 0) + (priceData?.changePercent || 0);
+        const growthClass = totalGrowth >= 0 ? 'positive' : 'negative';
+
+        // Mostrar el crecimiento total como métrica principal
+        htmlContent += `
+          <div class="metric ${growthClass}">
+            <span class="metric-label">Growth</span>
+            <span class="metric-value">${formatChange(totalGrowth)}</span>
+          </div>`;
+
+        // Mostrar el precio actual
+        if (priceData) {
+          htmlContent += `
+            <div class="metric">
+              <span class="metric-label">Price</span>
+              <span class="metric-value">$${priceData.price.toFixed(2)}</span>
+            </div>`;
+        }
+
+        htmlContent += '</div></a>';
+        div.innerHTML = htmlContent;
+
+      } catch (error) {
+        console.error(`Error creating asset item for ${asset.symbol}:`, error);
+        div.innerHTML = `
+          <a href="#" onclick="return false;">
+            <span class="asset-symbol">${asset.symbol}</span>
+            <div class="asset-metrics">
+              <div class="metric">
+                <span class="metric-label">Error</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }
+      
+      return div;
+    }
+
+    // Función para formatear el volumen
+    function formatVolume(volume) {
+      if (volume >= 1000000000) {
+        return `${(volume / 1000000000).toFixed(1)}B`;
+      } else if (volume >= 1000000) {
+        return `${(volume / 1000000).toFixed(1)}M`;
+      } else if (volume >= 1000) {
+        return `${(volume / 1000).toFixed(1)}K`;
+      }
+      return volume.toString();
+    }
+
+    // Función para actualizar los datos de rendimiento
+    async function updatePerformanceData() {
+      try {
+        const response = await fetch('performance_data.json');
+        const data = await response.json();
+        const lastUpdate = new Date(data.lastUpdate);
+        const now = new Date();
+        const hoursSinceUpdate = (now - lastUpdate) / (1000 * 60 * 60);
+
+        // Actualizar si han pasado más de 24 horas
+        if (hoursSinceUpdate >= 24) {
+          // Aquí implementarías la lógica para actualizar los datos
+          // Por ejemplo, hacer llamadas a APIs de Yahoo Finance
+          console.log('Updating performance data...');
+        }
+      } catch (error) {
+        console.error('Error updating performance data:', error);
+      }
+    }
+
+    // Lista de activos a mostrar
+    const assets = [
+      { symbol: 'AAPL', name: 'Apple Inc.' },
+      { symbol: 'MSFT', name: 'Microsoft Corporation' },
+      { symbol: 'GOOGL', name: 'Alphabet Inc.' },
+      { symbol: 'TSLA', name: 'Tesla Inc.' },
+      { symbol: 'NVDA', name: 'NVIDIA Corporation' },
+      { symbol: 'META', name: 'Meta Platforms Inc.' },
+      { symbol: 'AMZN', name: 'Amazon.com Inc.' },
+      { symbol: 'AMD', name: 'Advanced Micro Devices' },
+      { symbol: 'PYPL', name: 'PayPal Holdings Inc.' },
+      { symbol: 'CRM', name: 'Salesforce Inc.' }
+    ];
+
+    // Función para inicializar el carrusel
+    async function initializeCarousel() {
+      const carousel = document.querySelector('.assets-carousel');
+      const track = document.createElement('div');
+      track.className = 'assets-track';
+      carousel.appendChild(track);
+
+      try {
+        // Obtener datos de rendimiento
+        const response = await fetch('performance_data.json');
+        const data = await response.json();
+        
+        // Convertir activos a array y ordenar por crecimiento
+        const sortedAssets = Object.values(data.assets)
+          .sort((a, b) => {
+            const aGrowth = (a.weeklyChange || 0) + (a.dailyChange || 0);
+            const bGrowth = (b.weeklyChange || 0) + (b.dailyChange || 0);
+            return bGrowth - aGrowth; // Ordenar de mayor a menor crecimiento
+          });
+
+        // Crear elementos del carrusel
+        for (const asset of sortedAssets) {
+          const item = await createAssetItem(asset);
+          track.appendChild(item);
+        }
+
+        // Duplicar elementos para scroll infinito
+        const items = track.innerHTML;
+        track.innerHTML = items + items;
+
+      } catch (error) {
+        console.error('Error initializing carousel:', error);
+        track.innerHTML = `
+          <div class="asset-item">
+            <a href="#" onclick="return false;">
+              <span class="asset-symbol">Error</span>
+              <div class="asset-metrics">
+                <div class="metric">
+                  <span class="metric-label">Failed to load data</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        `;
+      }
+    }
+
+    // Inicializar el carrusel cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeCarousel();
+      // Actualizar cada 5 minutos
+      setInterval(initializeCarousel, 5 * 60 * 1000);
+    });
+  </script>
 </body>
 </html>

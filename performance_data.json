@@ -1,20 +1,85 @@
 {
-  "lastUpdate": "2024-03-28",
+  "lastUpdate": "2024-03-20T00:00:00Z",
   "assets": {
-    "AAPL": { "weeklyReturn": 2.5, "lastPrice": 175.50 },
-    "MSFT": { "weeklyReturn": 3.2, "lastPrice": 425.30 },
-    "GOOGL": { "weeklyReturn": 1.8, "lastPrice": 155.20 },
-    "TSLA": { "weeklyReturn": -2.1, "lastPrice": 180.40 },
-    "NKE": { "weeklyReturn": 0.5, "lastPrice": 98.75 },
-    "ADBE": { "weeklyReturn": 4.2, "lastPrice": 525.80 },
-    "INTC": { "weeklyReturn": -1.3, "lastPrice": 42.15 },
-    "ORCL": { "weeklyReturn": 2.8, "lastPrice": 145.60 },
-    "CRM": { "weeklyReturn": 3.5, "lastPrice": 310.25 },
-    "NVDA": { "weeklyReturn": 5.7, "lastPrice": 950.80 },
-    "META": { "weeklyReturn": 4.8, "lastPrice": 485.30 },
-    "AMZN": { "weeklyReturn": 3.9, "lastPrice": 180.40 },
-    "AMD": { "weeklyReturn": 6.2, "lastPrice": 185.50 },
-    "PYPL": { "weeklyReturn": 2.1, "lastPrice": 65.80 },
-    "INTC": { "weeklyReturn": -1.3, "lastPrice": 42.15 }
+    "AAPL": {
+      "symbol": "AAPL",
+      "name": "Apple Inc.",
+      "weeklyChange": 2.5,
+      "dailyChange": 1.2,
+      "lastPrice": 172.45,
+      "volume": 125000000
+    },
+    "MSFT": {
+      "symbol": "MSFT",
+      "name": "Microsoft Corporation",
+      "weeklyChange": 3.8,
+      "dailyChange": -0.5,
+      "lastPrice": 425.32,
+      "volume": 85000000
+    },
+    "GOOGL": {
+      "symbol": "GOOGL",
+      "name": "Alphabet Inc.",
+      "weeklyChange": 1.9,
+      "dailyChange": 0.8,
+      "lastPrice": 147.68,
+      "volume": 95000000
+    },
+    "TSLA": {
+      "symbol": "TSLA",
+      "name": "Tesla Inc.",
+      "weeklyChange": -5.2,
+      "dailyChange": -2.1,
+      "lastPrice": 172.63,
+      "volume": 150000000
+    },
+    "NVDA": {
+      "symbol": "NVDA",
+      "name": "NVIDIA Corporation",
+      "weeklyChange": 8.4,
+      "dailyChange": 3.2,
+      "lastPrice": 925.61,
+      "volume": 75000000
+    },
+    "META": {
+      "symbol": "META",
+      "name": "Meta Platforms Inc.",
+      "weeklyChange": 4.2,
+      "dailyChange": 1.5,
+      "lastPrice": 485.09,
+      "volume": 65000000
+    },
+    "AMZN": {
+      "symbol": "AMZN",
+      "name": "Amazon.com Inc.",
+      "weeklyChange": 2.8,
+      "dailyChange": 0.9,
+      "lastPrice": 178.75,
+      "volume": 110000000
+    },
+    "AMD": {
+      "symbol": "AMD",
+      "name": "Advanced Micro Devices",
+      "weeklyChange": 6.7,
+      "dailyChange": 2.4,
+      "lastPrice": 192.53,
+      "volume": 80000000
+    },
+    "PYPL": {
+      "symbol": "PYPL",
+      "name": "PayPal Holdings Inc.",
+      "weeklyChange": -1.8,
+      "dailyChange": -0.7,
+      "lastPrice": 64.32,
+      "volume": 70000000
+    },
+    "CRM": {
+      "symbol": "CRM",
+      "name": "Salesforce Inc.",
+      "weeklyChange": 3.1,
+      "dailyChange": 1.1,
+      "lastPrice": 298.45,
+      "volume": 60000000
+    }
   }
 } 
