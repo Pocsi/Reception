@@ -59,9 +59,9 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 40px;
-      background-color: #f8f9fa;
-      border-top: 1px solid #dee2e6;
+      height: 50px;
+      background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.9));
+      border-top: 1px solid rgba(255,255,255,0.1);
       overflow: hidden;
       z-index: 1000;
       display: block !important;
@@ -104,7 +104,7 @@
     .crypto-track {
       display: inline-flex;
       padding: 0 20px;
-      animation: scroll 60s linear infinite;
+      animation: scroll 30s linear infinite;
       white-space: nowrap;
       min-width: 100%;
     }
@@ -114,20 +114,18 @@
     }
 
     @keyframes scroll {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(-50%);
-      }
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
     .crypto-item {
-      display: inline-block;
-      padding: 0 20px;
-      font-size: 12px;
-      color: #333;
-      min-width: 200px;
+      display: inline-flex;
+      padding: 0 30px;
+      font-size: 14px;
+      color: #fff;
+      min-width: 250px;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .crypto-item a {
@@ -135,61 +133,66 @@
       color: inherit;
       display: flex;
       align-items: center;
-      gap: 8px;
-      height: 40px;
+      gap: 15px;
+      height: 50px;
+      width: 100%;
     }
 
     .crypto-symbol {
       font-weight: bold;
-      font-size: 11px;
-      min-width: 40px;
-    }
-
-    .crypto-price {
-      font-size: 11px;
-      min-width: 80px;
-    }
-
-    .crypto-change {
-      font-size: 11px;
+      font-size: 16px;
       min-width: 60px;
+      color: #fff;
     }
 
-    .crypto-change.positive {
-      color: #28a745;
+    .crypto-metrics {
+      display: flex;
+      gap: 20px;
+      align-items: center;
     }
 
-    .crypto-change.negative {
-      color: #dc3545;
+    .metric {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.1);
     }
 
-    .crypto-esg {
-      font-size: 9px;
-      color: #6c757d;
-      min-width: 60px;
+    .metric-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
     }
 
-    .crypto-impact {
-      font-size: 9px;
-      padding: 2px 4px;
-      border-radius: 3px;
-      margin-left: 4px;
+    .metric-value {
+      font-weight: bold;
+      font-size: 14px;
     }
 
-    .crypto-impact:contains("High") {
-      background-color: #28a745;
-      color: white;
+    .metric.positive {
+      background: rgba(40, 167, 69, 0.2);
     }
 
-    .crypto-impact:contains("Very High") {
-      background-color: #17a2b8;
-      color: white;
+    .metric.negative {
+      background: rgba(220, 53, 69, 0.2);
     }
 
-    .crypto-impact:contains("Medium") {
-      background-color: #ffc107;
-      color: black;
+    .esg-score {
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
+
+    .esg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .esg-dot.high { background: #28a745; }
+    .esg-dot.medium { background: #ffc107; }
+    .esg-dot.low { background: #dc3545; }
 
     .update-time {
       display: none;
@@ -456,37 +459,40 @@
       div.className = 'crypto-item';
       
       try {
-        // Intentar obtener datos de ambas APIs en paralelo
+        // Obtener datos de precios y ESG
         const [priceData, esgData] = await Promise.allSettled([
           fetchPriceData(asset.symbol),
           fetchSustainabilityData(asset.symbol)
         ]);
 
-        // Preparar el contenido HTML basado en los datos disponibles
-        let htmlContent = `<a href="#" onclick="return false;"><span class="crypto-symbol">${asset.symbol}</span>`;
-        
-        // Agregar precio si está disponible
+        // Preparar el contenido HTML
+        let htmlContent = `<a href="#" onclick="return false;">
+          <span class="crypto-symbol">${asset.symbol}</span>
+          <div class="crypto-metrics">`;
+
+        // Agregar métrica de rendimiento
         if (priceData.status === 'fulfilled' && priceData.value) {
+          const changeClass = priceData.value.changePercent >= 0 ? 'positive' : 'negative';
           htmlContent += `
-            <span class="crypto-price">${formatPrice(priceData.value.price)}</span>
-            <span class="crypto-change ${priceData.value.changePercent >= 0 ? 'positive' : 'negative'}">${formatChange(priceData.value.changePercent)}</span>
-          `;
-        } else {
-          htmlContent += `<span class="crypto-price">Price N/A</span>`;
+            <div class="metric ${changeClass}">
+              <span class="metric-label">Performance</span>
+              <span class="metric-value">${formatChange(priceData.value.changePercent)}</span>
+            </div>`;
         }
 
-        // Agregar datos ESG si están disponibles
+        // Agregar métrica ESG
         if (esgData.status === 'fulfilled' && esgData.value) {
           const sustainabilityData = esgData.value;
+          const esgClass = getESGClass(sustainabilityData.totalEsg);
           htmlContent += `
-            <span class="crypto-esg">ESG: ${sustainabilityData.totalEsg}</span>
-            <span class="crypto-impact">${sustainabilityData.impact}</span>
-          `;
-        } else {
-          htmlContent += `<span class="crypto-esg">ESG: N/A</span>`;
+            <div class="metric">
+              <span class="metric-label">ESG</span>
+              <span class="metric-value">${sustainabilityData.totalEsg}</span>
+              <span class="esg-dot ${esgClass}"></span>
+            </div>`;
         }
 
-        htmlContent += '</a>';
+        htmlContent += '</div></a>';
         div.innerHTML = htmlContent;
 
       } catch (error) {
@@ -494,12 +500,23 @@
         div.innerHTML = `
           <a href="#" onclick="return false;">
             <span class="crypto-symbol">${asset.symbol}</span>
-            <span class="crypto-price">Error</span>
+            <div class="crypto-metrics">
+              <div class="metric">
+                <span class="metric-label">Loading...</span>
+              </div>
+            </div>
           </a>
         `;
       }
       
       return div;
+    }
+
+    // Función para determinar la clase ESG basada en el puntaje
+    function getESGClass(score) {
+      if (score >= 70) return 'high';
+      if (score >= 40) return 'medium';
+      return 'low';
     }
 
     // Función para verificar y actualizar datos ESG
