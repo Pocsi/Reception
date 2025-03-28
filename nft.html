@@ -171,7 +171,24 @@
 
     .crypto-impact {
       font-size: 9px;
-      color: #6c757d;
+      padding: 2px 4px;
+      border-radius: 3px;
+      margin-left: 4px;
+    }
+
+    .crypto-impact:contains("High") {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .crypto-impact:contains("Very High") {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    .crypto-impact:contains("Medium") {
+      background-color: #ffc107;
+      color: black;
     }
 
     .update-time {
@@ -293,8 +310,8 @@
       }
     ];
 
-    // Lista de los 35 activos más sostenibles
-    let sustainableAssets = [
+    // Lista de todos los activos disponibles
+    let allAssets = [
       { symbol: 'AAPL', name: 'Apple Inc.' },
       { symbol: 'MSFT', name: 'Microsoft Corporation' },
       { symbol: 'GOOGL', name: 'Alphabet Inc.' },
@@ -304,12 +321,17 @@
       { symbol: 'INTC', name: 'Intel Corporation' },
       { symbol: 'ORCL', name: 'Oracle Corporation' },
       { symbol: 'CRM', name: 'Salesforce Inc.' },
-      { symbol: 'NVDA', name: 'NVIDIA Corporation' }
+      { symbol: 'NVDA', name: 'NVIDIA Corporation' },
+      { symbol: 'META', name: 'Meta Platforms Inc.' },
+      { symbol: 'AMZN', name: 'Amazon.com Inc.' },
+      { symbol: 'AMD', name: 'Advanced Micro Devices' },
+      { symbol: 'PYPL', name: 'PayPal Holdings Inc.' }
     ];
 
     // Configuración de APIs
     const ALPHA_VANTAGE_API_KEY = 'ACUS4L73I8PT14I8';
     const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    const ESG_UPDATE_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
     // Función para guardar datos en el caché
     function saveToCache(key, data) {
@@ -370,7 +392,7 @@
       }
     }
 
-    // Función para obtener datos de sostenibilidad
+    // Función para obtener datos ESG
     async function fetchSustainabilityData(symbol) {
       // Intentar obtener del caché primero
       const cacheKey = `esg_${symbol}`;
@@ -380,17 +402,26 @@
       }
 
       try {
-        // Usar datos simulados de ESG por ahora
-        const sustainabilityData = {
-          totalEsg: Math.floor(Math.random() * 100),
-          environmentScore: Math.floor(Math.random() * 100),
-          socialScore: Math.floor(Math.random() * 100),
-          governanceScore: Math.floor(Math.random() * 100)
-        };
+        // Obtener datos del archivo JSON local
+        const response = await fetch('esg_data.json');
+        const data = await response.json();
         
-        // Guardar en caché
-        saveToCache(cacheKey, sustainabilityData);
-        return sustainabilityData;
+        if (data.stocks && data.stocks[symbol]) {
+          const esgData = data.stocks[symbol];
+          const sustainabilityData = {
+            totalEsg: esgData.totalEsg,
+            environmentScore: esgData.environmentScore,
+            socialScore: esgData.socialScore,
+            governanceScore: esgData.governanceScore,
+            impact: esgData.impact,
+            website: esgData.website
+          };
+          
+          // Guardar en caché
+          saveToCache(cacheKey, sustainabilityData);
+          return sustainabilityData;
+        }
+        throw new Error('Stock not found in ESG data');
       } catch (error) {
         console.error(`Error fetching ESG data for ${symbol}:`, error);
         return null;
@@ -425,18 +456,11 @@
       div.className = 'crypto-item';
       
       try {
-        // Establecer un timeout de 5 segundos para cada API call
-        const timeout = 5000;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-        // Intentar obtener datos de ambas APIs en paralelo con timeout
+        // Intentar obtener datos de ambas APIs en paralelo
         const [priceData, esgData] = await Promise.allSettled([
           fetchPriceData(asset.symbol),
           fetchSustainabilityData(asset.symbol)
         ]);
-
-        clearTimeout(timeoutId);
 
         // Preparar el contenido HTML basado en los datos disponibles
         let htmlContent = `<a href="#" onclick="return false;"><span class="crypto-symbol">${asset.symbol}</span>`;
@@ -453,8 +477,11 @@
 
         // Agregar datos ESG si están disponibles
         if (esgData.status === 'fulfilled' && esgData.value) {
-          const sustainabilityScore = calculateSustainabilityScore(esgData.value);
-          htmlContent += `<span class="crypto-esg">ESG: ${sustainabilityScore.toFixed(0)}</span>`;
+          const sustainabilityData = esgData.value;
+          htmlContent += `
+            <span class="crypto-esg">ESG: ${sustainabilityData.totalEsg}</span>
+            <span class="crypto-impact">${sustainabilityData.impact}</span>
+          `;
         } else {
           htmlContent += `<span class="crypto-esg">ESG: N/A</span>`;
         }
@@ -475,6 +502,56 @@
       return div;
     }
 
+    // Función para verificar y actualizar datos ESG
+    async function checkAndUpdateESGData() {
+      try {
+        const response = await fetch('esg_data.json');
+        const data = await response.json();
+        const lastUpdate = new Date(data.lastUpdate);
+        const now = new Date();
+        const daysSinceUpdate = (now - lastUpdate) / (1000 * 60 * 60 * 24);
+
+        if (daysSinceUpdate >= 7) {
+          // Aquí podrías implementar la lógica para actualizar el archivo JSON
+          // Por ejemplo, hacer una llamada a un servicio que actualice los datos
+          console.log('ESG data needs to be updated');
+        }
+      } catch (error) {
+        console.error('Error checking ESG data:', error);
+      }
+    }
+
+    // Función para obtener los activos con mejor rendimiento
+    async function getTopPerformingAssets(count = 10) {
+      try {
+        const response = await fetch('performance_data.json');
+        const data = await response.json();
+        
+        // Convertir los activos a un array y ordenar por rendimiento semanal
+        const assetsArray = Object.entries(data.assets)
+          .map(([symbol, data]) => ({
+            symbol,
+            weeklyReturn: data.weeklyReturn,
+            lastPrice: data.lastPrice
+          }))
+          .sort((a, b) => b.weeklyReturn - a.weeklyReturn)
+          .slice(0, count);
+
+        // Obtener la información completa de los activos
+        return assetsArray.map(asset => {
+          const fullAsset = allAssets.find(a => a.symbol === asset.symbol);
+          return {
+            ...fullAsset,
+            weeklyReturn: asset.weeklyReturn,
+            lastPrice: asset.lastPrice
+          };
+        });
+      } catch (error) {
+        console.error('Error getting top performing assets:', error);
+        return allAssets.slice(0, count); // Fallback a la lista completa
+      }
+    }
+
     // Función para inicializar el carrusel
     async function initializeCarousel() {
       const track = document.querySelector('.crypto-track');
@@ -489,8 +566,11 @@
       loadingIndicator.classList.add('active');
 
       try {
+        // Obtener los activos con mejor rendimiento
+        const topAssets = await getTopPerformingAssets(10);
+        
         // Crear elementos con datos reales
-        const items = await Promise.all(sustainableAssets.map(async (asset) => {
+        const items = await Promise.all(topAssets.map(async (asset) => {
           const item = await createCarouselItem(asset);
           // Agregar el elemento inmediatamente cuando esté listo
           track.appendChild(item);
@@ -525,14 +605,39 @@
       }
     }
 
+    // Función para actualizar los datos de rendimiento
+    async function updatePerformanceData() {
+      try {
+        const response = await fetch('performance_data.json');
+        const data = await response.json();
+        const lastUpdate = new Date(data.lastUpdate);
+        const now = new Date();
+        const daysSinceUpdate = (now - lastUpdate) / (1000 * 60 * 60 * 24);
+
+        if (daysSinceUpdate >= 7) {
+          // Aquí implementarías la lógica para actualizar los datos de rendimiento
+          // Por ejemplo, hacer llamadas a APIs de Yahoo Finance o Alpha Vantage
+          console.log('Performance data needs to be updated');
+        }
+      } catch (error) {
+        console.error('Error updating performance data:', error);
+      }
+    }
+
     // Inicializar el carrusel cuando se carga la página
     document.addEventListener('DOMContentLoaded', () => {
       console.log('Initializing carousel...');
       initializeCarousel();
       
-      // Actualizar datos cada 24 horas
+      // Verificar y actualizar datos ESG cada semana
+      setInterval(checkAndUpdateESGData, ESG_UPDATE_INTERVAL);
+      
+      // Verificar y actualizar datos de rendimiento cada semana
+      setInterval(updatePerformanceData, ESG_UPDATE_INTERVAL);
+      
+      // Actualizar precios cada 24 horas
       setInterval(() => {
-        console.log('Updating carousel data...');
+        console.log('Updating price data...');
         initializeCarousel();
       }, CACHE_DURATION);
     });
