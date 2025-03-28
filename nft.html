@@ -102,8 +102,8 @@
 
     .crypto-track {
       display: inline-flex;
-      padding: 0 20px;
-      animation: scrollRight 120s linear infinite;
+      padding: 0 30px;
+      animation: scrollRight 180s linear infinite;
       white-space: nowrap;
       min-width: 100%;
     }
@@ -122,9 +122,10 @@
       padding: 0 30px;
       font-size: 14px;
       color: #fff;
-      min-width: 250px;
+      min-width: 300px;
       align-items: center;
       justify-content: space-between;
+      margin-right: 20px;
     }
 
     .crypto-item a {
@@ -132,7 +133,7 @@
       color: inherit;
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
       height: 50px;
       width: 100%;
     }
@@ -140,33 +141,38 @@
     .crypto-symbol {
       font-weight: bold;
       font-size: 16px;
-      min-width: 60px;
+      min-width: 70px;
       color: #fff;
     }
 
     .crypto-metrics {
       display: flex;
-      gap: 20px;
+      gap: 25px;
       align-items: center;
+      flex-wrap: nowrap;
     }
 
     .metric {
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding: 4px 8px;
+      gap: 8px;
+      padding: 4px 10px;
       border-radius: 4px;
       background: rgba(255,255,255,0.1);
+      min-width: 100px;
+      justify-content: space-between;
     }
 
     .metric-label {
       font-size: 12px;
       color: rgba(255,255,255,0.7);
+      white-space: nowrap;
     }
 
     .metric-value {
       font-weight: bold;
       font-size: 14px;
+      white-space: nowrap;
     }
 
     .metric.positive {
@@ -212,8 +218,8 @@
 
     .assets-track {
       display: inline-flex;
-      padding: 0 20px;
-      animation: scrollLeft 120s linear infinite;
+      padding: 0 30px;
+      animation: scrollRight 180s linear infinite;
       white-space: nowrap;
       min-width: 100%;
     }
@@ -222,9 +228,9 @@
       animation-play-state: paused;
     }
 
-    @keyframes scrollLeft {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
+    @keyframes scrollRight {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
     }
 
     .asset-item {
@@ -261,11 +267,12 @@
     }
 
     .chain-badge {
-      font-size: 10px;
-      padding: 2px 6px;
+      font-size: 11px;
+      padding: 2px 8px;
       border-radius: 3px;
-      background: rgba(255,255,255,0.1);
-      color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.9);
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -442,7 +449,8 @@
       if (cachedData) return cachedData;
 
       try {
-        const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`)}`);
+        // Usar la API de Yahoo Finance directamente
+        const response = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`);
         const data = await response.json();
         
         if (data.chart && data.chart.result && data.chart.result[0]) {
@@ -464,6 +472,30 @@
         throw new Error('Invalid price data format');
       } catch (error) {
         console.error(`Error fetching price data for ${symbol}:`, error);
+        // Si falla Yahoo Finance, intentar con Alpha Vantage como respaldo
+        try {
+          const alphaVantageResponse = await fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${ALPHA_VANTAGE_API_KEY}`);
+          const alphaVantageData = await alphaVantageResponse.json();
+          
+          if (alphaVantageData['Global Quote']) {
+            const quote = alphaVantageData['Global Quote'];
+            const price = parseFloat(quote['05. price']);
+            const changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
+            const change = parseFloat(quote['09. change']);
+            
+            const priceData = {
+              price: price,
+              changePercent: changePercent,
+              change: change,
+              timestamp: Date.now()
+            };
+            
+            saveToCache(cacheKey, priceData);
+            return priceData;
+          }
+        } catch (alphaVantageError) {
+          console.error(`Error fetching from Alpha Vantage for ${symbol}:`, alphaVantageError);
+        }
         return null;
       }
     }
@@ -538,7 +570,7 @@
           <span class="asset-symbol">${asset.symbol}</span>
           <div class="asset-metrics">`;
 
-        // Mostrar solo el crecimiento diario
+        // Mostrar el crecimiento diario
         const dailyGrowth = priceData?.changePercent || 0;
         const growthClass = dailyGrowth >= 0 ? 'positive' : 'negative';
 
@@ -554,7 +586,7 @@
           htmlContent += `
             <div class="metric">
               <span class="metric-label">Price</span>
-              <span class="metric-value">$${priceData.price.toFixed(2)}</span>
+              <span class="metric-value">${formatPrice(priceData.price)}</span>
             </div>`;
         }
 
