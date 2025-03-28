@@ -103,7 +103,7 @@
     .crypto-track {
       display: inline-flex;
       padding: 0 20px;
-      animation: scrollRight 60s linear infinite;
+      animation: scrollRight 120s linear infinite;
       white-space: nowrap;
       min-width: 100%;
     }
@@ -213,7 +213,7 @@
     .assets-track {
       display: inline-flex;
       padding: 0 20px;
-      animation: scrollLeft 60s linear infinite;
+      animation: scrollLeft 120s linear infinite;
       white-space: nowrap;
       min-width: 100%;
     }
@@ -454,7 +454,8 @@
           const priceData = {
             price: price,
             changePercent: changePercent,
-            change: price - previousClose
+            change: price - previousClose,
+            timestamp: Date.now()
           };
           
           saveToCache(cacheKey, priceData);
@@ -608,7 +609,8 @@
             const priceData = await fetchPriceData(asset.symbol);
             return {
               ...asset,
-              dailyChange: priceData?.changePercent || 0
+              dailyChange: priceData?.changePercent || 0,
+              lastUpdate: priceData?.timestamp || Date.now()
             };
           })
         );
@@ -672,7 +674,8 @@
             const priceData = await fetchPriceData(asset.symbol);
             return {
               ...asset,
-              dailyChange: priceData?.changePercent || 0
+              dailyChange: priceData?.changePercent || 0,
+              lastUpdate: priceData?.timestamp || Date.now()
             };
           })
         );
