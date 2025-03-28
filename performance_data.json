@@ -1,85 +1,115 @@
 {
-  "lastUpdate": "2024-03-20T00:00:00Z",
+  "lastUpdate": "2024-03-28T12:00:00Z",
   "assets": {
-    "AAPL": {
-      "symbol": "AAPL",
-      "name": "Apple Inc.",
-      "weeklyChange": 2.5,
-      "dailyChange": 1.2,
-      "lastPrice": 172.45,
-      "volume": 125000000
+    "RIO": {
+      "symbol": "RIO",
+      "name": "Rio Tinto",
+      "sector": "Basic Materials",
+      "industry": "Mining",
+      "weeklyChange": -4.33,
+      "dailyChange": -1.73,
+      "lastPrice": 218.55,
+      "volume": 2850000,
+      "marketCap": 89000000000
     },
-    "MSFT": {
-      "symbol": "MSFT",
-      "name": "Microsoft Corporation",
-      "weeklyChange": 3.8,
-      "dailyChange": -0.5,
-      "lastPrice": 425.32,
-      "volume": 85000000
+    "BHP": {
+      "symbol": "BHP",
+      "name": "BHP Group",
+      "sector": "Basic Materials",
+      "industry": "Mining",
+      "weeklyChange": -3.95,
+      "dailyChange": -2.26,
+      "lastPrice": 270.05,
+      "volume": 1850000,
+      "marketCap": 82000000000
     },
-    "GOOGL": {
-      "symbol": "GOOGL",
-      "name": "Alphabet Inc.",
-      "weeklyChange": 1.9,
-      "dailyChange": 0.8,
-      "lastPrice": 147.68,
-      "volume": 95000000
-    },
-    "TSLA": {
-      "symbol": "TSLA",
-      "name": "Tesla Inc.",
-      "weeklyChange": -5.2,
-      "dailyChange": -2.1,
-      "lastPrice": 172.63,
-      "volume": 150000000
-    },
-    "NVDA": {
-      "symbol": "NVDA",
-      "name": "NVIDIA Corporation",
-      "weeklyChange": 8.4,
-      "dailyChange": 3.2,
-      "lastPrice": 925.61,
-      "volume": 75000000
-    },
-    "META": {
-      "symbol": "META",
-      "name": "Meta Platforms Inc.",
-      "weeklyChange": 4.2,
-      "dailyChange": 1.5,
-      "lastPrice": 485.09,
-      "volume": 65000000
-    },
-    "AMZN": {
-      "symbol": "AMZN",
-      "name": "Amazon.com Inc.",
-      "weeklyChange": 2.8,
-      "dailyChange": 0.9,
-      "lastPrice": 178.75,
-      "volume": 110000000
-    },
-    "AMD": {
-      "symbol": "AMD",
-      "name": "Advanced Micro Devices",
-      "weeklyChange": 6.7,
-      "dailyChange": 2.4,
-      "lastPrice": 192.53,
-      "volume": 80000000
-    },
-    "PYPL": {
-      "symbol": "PYPL",
-      "name": "PayPal Holdings Inc.",
-      "weeklyChange": -1.8,
-      "dailyChange": -0.7,
+    "VALE": {
+      "symbol": "VALE",
+      "name": "Vale S.A.",
+      "sector": "Basic Materials",
+      "industry": "Mining",
+      "weeklyChange": -2.77,
+      "dailyChange": -1.73,
       "lastPrice": 64.32,
-      "volume": 70000000
+      "volume": 3250000,
+      "marketCap": 78000000000
     },
-    "CRM": {
-      "symbol": "CRM",
-      "name": "Salesforce Inc.",
-      "weeklyChange": 3.1,
-      "dailyChange": 1.1,
-      "lastPrice": 298.45,
-      "volume": 60000000
+    "LIN": {
+      "symbol": "LIN",
+      "name": "Linde plc",
+      "sector": "Basic Materials",
+      "industry": "Chemicals",
+      "weeklyChange": -2.55,
+      "dailyChange": -1.73,
+      "lastPrice": 455.09,
+      "volume": 750000,
+      "marketCap": 75000000000
+    },
+    "GOLD": {
+      "symbol": "GOLD",
+      "name": "Barrick Gold",
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "weeklyChange": -6.23,
+      "dailyChange": -2.26,
+      "lastPrice": 18.45,
+      "volume": 4500000,
+      "marketCap": 42000000000
+    },
+    "NEM": {
+      "symbol": "NEM",
+      "name": "Newmont Mining",
+      "sector": "Basic Materials",
+      "industry": "Gold",
+      "weeklyChange": -6.42,
+      "dailyChange": -2.26,
+      "lastPrice": 22.32,
+      "volume": 3800000,
+      "marketCap": 38000000000
+    },
+    "FCX": {
+      "symbol": "FCX",
+      "name": "Freeport-McMoRan",
+      "sector": "Basic Materials",
+      "industry": "Copper",
+      "weeklyChange": -6.46,
+      "dailyChange": -2.26,
+      "lastPrice": 108.75,
+      "volume": 2500000,
+      "marketCap": 35000000000
+    },
+    "SQM": {
+      "symbol": "SQM",
+      "name": "Sociedad Química y Minera",
+      "sector": "Basic Materials",
+      "industry": "Chemicals",
+      "weeklyChange": -6.50,
+      "dailyChange": -2.26,
+      "lastPrice": 45.64,
+      "volume": 1500000,
+      "marketCap": 32000000000
+    },
+    "DOW": {
+      "symbol": "DOW",
+      "name": "Dow Inc.",
+      "sector": "Basic Materials",
+      "industry": "Chemicals",
+      "weeklyChange": -8.44,
+      "dailyChange": -2.77,
+      "lastPrice": 55.32,
+      "volume": 2100000,
+      "marketCap": 28000000000
+    },
+    "ALB": {
+      "symbol": "ALB",
+      "name": "Albemarle Corporation",
+      "sector": "Basic Materials",
+      "industry": "Chemicals",
+      "weeklyChange": -9.52,
+      "dailyChange": -4.33,
+      "lastPrice": 125.61,
+      "volume": 1800000,
+      "marketCap": 25000000000
     }
   }
 } 

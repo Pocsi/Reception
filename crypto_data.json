@@ -1,115 +1,105 @@
 {
-  "lastUpdate": "2024-03-28T00:00:00Z",
+  "lastUpdate": "2024-03-28T12:00:00Z",
   "assets": {
-    "BTC": {
-      "symbol": "BTC",
-      "name": "Bitcoin",
+    "BTC-USD": {
+      "symbol": "BTC-USD",
+      "name": "Bitcoin USD",
       "chain": "Bitcoin",
-      "weeklyChange": 7.2,
-      "dailyChange": 2.8,
-      "lastPrice": 71250.45,
+      "weeklyChange": -6.89,
+      "dailyChange": -2.55,
+      "lastPrice": 69250.45,
       "volume": 32500000000,
-      "marketCap": 1380000000000,
-      "dominance": 52.3
+      "marketCap": 1380000000000
     },
-    "ETH": {
-      "symbol": "ETH",
-      "name": "Ethereum",
+    "ETH-USD": {
+      "symbol": "ETH-USD",
+      "name": "Ethereum USD",
       "chain": "Ethereum",
-      "weeklyChange": 5.8,
-      "dailyChange": 2.1,
-      "lastPrice": 3650.32,
+      "weeklyChange": -8.44,
+      "dailyChange": -2.77,
+      "lastPrice": 3550.32,
       "volume": 19500000000,
-      "marketCap": 438000000000,
-      "dominance": 18.2
+      "marketCap": 438000000000
     },
-    "SOL": {
-      "symbol": "SOL",
-      "name": "Solana",
-      "chain": "Solana",
-      "weeklyChange": 12.4,
-      "dailyChange": 4.2,
-      "lastPrice": 145.61,
+    "USDT-USD": {
+      "symbol": "USDT-USD",
+      "name": "Tether USD",
+      "chain": "Multiple",
+      "weeklyChange": -0.01,
+      "dailyChange": -0.01,
+      "lastPrice": 1.0001,
+      "volume": 85500000000,
+      "marketCap": 102000000000
+    },
+    "BNB-USD": {
+      "symbol": "BNB-USD",
+      "name": "BNB USD",
+      "chain": "BNB Chain",
+      "weeklyChange": -9.52,
+      "dailyChange": -4.33,
+      "lastPrice": 528.61,
       "volume": 8500000000,
-      "marketCap": 65000000000,
-      "dominance": 2.8
+      "marketCap": 65000000000
     },
-    "AVAX": {
-      "symbol": "AVAX",
-      "name": "Avalanche",
-      "chain": "Avalanche",
-      "weeklyChange": 6.2,
-      "dailyChange": 2.5,
-      "lastPrice": 55.09,
+    "SOL-USD": {
+      "symbol": "SOL-USD",
+      "name": "Solana USD",
+      "chain": "Solana",
+      "weeklyChange": -9.37,
+      "dailyChange": -3.95,
+      "lastPrice": 145.61,
       "volume": 7500000000,
-      "marketCap": 21000000000,
-      "dominance": 0.9
+      "marketCap": 55000000000
     },
-    "MATIC": {
-      "symbol": "MATIC",
-      "name": "Polygon",
-      "chain": "Polygon",
-      "weeklyChange": 4.8,
-      "dailyChange": 1.9,
-      "lastPrice": 1.85,
-      "volume": 1300000000,
-      "marketCap": 19000000000,
-      "dominance": 0.8
+    "XRP-USD": {
+      "symbol": "XRP-USD",
+      "name": "XRP USD",
+      "chain": "XRP Ledger",
+      "weeklyChange": -6.50,
+      "dailyChange": -2.26,
+      "lastPrice": 0.64,
+      "volume": 2800000000,
+      "marketCap": 35000000000
     },
-    "DOT": {
-      "symbol": "DOT",
-      "name": "Polkadot",
-      "chain": "Polkadot",
-      "weeklyChange": 8.7,
-      "dailyChange": 3.4,
-      "lastPrice": 11.53,
-      "volume": 900000000,
-      "marketCap": 14000000000,
-      "dominance": 0.6
+    "USDC-USD": {
+      "symbol": "USDC-USD",
+      "name": "USD Coin",
+      "chain": "Multiple",
+      "weeklyChange": -0.02,
+      "dailyChange": -0.01,
+      "lastPrice": 1.0002,
+      "volume": 15500000000,
+      "marketCap": 32000000000
     },
-    "ADA": {
-      "symbol": "ADA",
-      "name": "Cardano",
+    "ADA-USD": {
+      "symbol": "ADA-USD",
+      "name": "Cardano USD",
       "chain": "Cardano",
-      "weeklyChange": -2.8,
-      "dailyChange": -1.2,
+      "weeklyChange": -6.46,
+      "dailyChange": -1.73,
       "lastPrice": 0.64,
       "volume": 800000000,
-      "marketCap": 22000000000,
-      "dominance": 0.9
+      "marketCap": 22000000000
     },
-    "LINK": {
-      "symbol": "LINK",
-      "name": "Chainlink",
-      "chain": "Ethereum",
-      "weeklyChange": 5.1,
-      "dailyChange": 2.1,
-      "lastPrice": 19.45,
-      "volume": 700000000,
-      "marketCap": 11500000000,
-      "dominance": 0.5
+    "AVAX-USD": {
+      "symbol": "AVAX-USD",
+      "name": "Avalanche USD",
+      "chain": "Avalanche",
+      "weeklyChange": -6.42,
+      "dailyChange": -2.26,
+      "lastPrice": 55.09,
+      "volume": 7500000000,
+      "marketCap": 21000000000
     },
-    "UNI": {
-      "symbol": "UNI",
-      "name": "Uniswap",
-      "chain": "Ethereum",
-      "weeklyChange": 6.5,
-      "dailyChange": 2.8,
-      "lastPrice": 13.32,
-      "volume": 650000000,
-      "marketCap": 8000000000,
-      "dominance": 0.3
-    },
-    "AAVE": {
-      "symbol": "AAVE",
-      "name": "Aave",
-      "chain": "Ethereum",
-      "weeklyChange": 7.6,
-      "dailyChange": 3.2,
-      "lastPrice": 108.75,
-      "volume": 550000000,
-      "marketCap": 1600000000,
-      "dominance": 0.1
+    "DOGE-USD": {
+      "symbol": "DOGE-USD",
+      "name": "Dogecoin USD",
+      "chain": "Dogecoin",
+      "weeklyChange": -6.23,
+      "dailyChange": -2.26,
+      "lastPrice": 0.18,
+      "volume": 1300000000,
+      "marketCap": 19000000000
     }
   }
 } 
