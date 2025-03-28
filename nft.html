@@ -24,18 +24,40 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
 
     .nft-image {
-      max-width: 10%;
-      max-height: 10vh;
+      max-width: 5%;
+      max-height: 5vh;
       object-fit: contain;
+      transition: transform 0.1s ease-out;
     }
   </style>
 </head>
 <body>
   <div class="nft-container">
-    <img src="nft.gif" alt="NFT" class="nft-image">
+    <img src="nft.gif" alt="NFT" class="nft-image" id="nftImage">
   </div>
+
+  <script>
+    const image = document.getElementById('nftImage');
+    let scale = 1;
+    const zoomFactor = 0.1;
+
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      
+      if (e.deltaY < 0) {
+        // Zoom in
+        scale = Math.min(scale + zoomFactor, 2);
+      } else {
+        // Zoom out
+        scale = Math.max(scale - zoomFactor, 0.5);
+      }
+      
+      image.style.transform = `scale(${scale})`;
+    }, { passive: false });
+  </script>
 </body>
 </html> 
